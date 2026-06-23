@@ -132,7 +132,7 @@ export function renderStats() {
     g1El.innerHTML = `
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-icon">🔤</span>
+          <span class="stat-card-icon"><i class="ph-duotone ph-text-aa"></i></span>
           <h3>Guess by Letter</h3>
         </div>
         <div class="stat-grid">
@@ -142,7 +142,7 @@ export function renderStats() {
           </div>
           <div class="stat-item">
             <span class="stat-value">${data.stats.game1?.bestStreak || 0}</span>
-            <span class="stat-label">Best Streak 🔥</span>
+            <span class="stat-label">Best Streak <i class="ph-duotone ph-fire" style="color:var(--ocean-accent)"></i></span>
           </div>
           <div class="stat-item">
             <span class="stat-value">${data.g1Accuracy}%</span>
@@ -167,13 +167,13 @@ export function renderStats() {
     g2El.innerHTML = `
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-icon">🗺️</span>
+          <span class="stat-card-icon"><i class="ph-duotone ph-map-trifold"></i></span>
           <h3>Guess the Shape</h3>
         </div>
         <div class="stat-grid">
           <div class="stat-item">
             <span class="stat-value">${data.stats.game2?.bestStreak || 0}</span>
-            <span class="stat-label">Best Streak 🔥</span>
+            <span class="stat-label">Best Streak <i class="ph-duotone ph-fire" style="color:var(--ocean-accent)"></i></span>
           </div>
           <div class="stat-item">
             <span class="stat-value">${data.stats.game2?.totalRounds || 0}</span>
@@ -194,13 +194,13 @@ export function renderStats() {
     g3El.innerHTML = `
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-icon">🏁</span>
+          <span class="stat-card-icon"><i class="ph-duotone ph-flag"></i></span>
           <h3>Flag Guesser</h3>
         </div>
         <div class="stat-grid">
           <div class="stat-item">
             <span class="stat-value">${data.stats.game3?.bestStreak || 0}</span>
-            <span class="stat-label">Best Streak 🔥</span>
+            <span class="stat-label">Best Streak <i class="ph-duotone ph-fire" style="color:var(--ocean-accent)"></i></span>
           </div>
           <div class="stat-item">
             <span class="stat-value">${data.stats.game3?.correctFlags || 0}</span>
@@ -236,13 +236,13 @@ export function renderStats() {
     g4El.innerHTML = `
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-icon">⏱️</span>
+          <span class="stat-card-icon"><i class="ph-duotone ph-timer"></i></span>
           <h3>Timed Sprint</h3>
         </div>
         <div class="stat-grid">
           <div class="stat-item">
             <span class="stat-value">${data.stats.game4?.bestScore || 0}</span>
-            <span class="stat-label">Best Score 🏆</span>
+            <span class="stat-label">Best Score <i class="ph-duotone ph-trophy" style="color:var(--ocean-accent)"></i></span>
           </div>
           <div class="stat-item">
             <span class="stat-value">${data.stats.game4?.totalSprints || 0}</span>
@@ -278,7 +278,7 @@ export function renderStats() {
     accuracyEl.innerHTML = `
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-icon">🎯</span>
+          <span class="stat-card-icon"><i class="ph-duotone ph-target"></i></span>
           <h3>Overall Accuracy</h3>
         </div>
         <div class="stat-accuracy-ring">

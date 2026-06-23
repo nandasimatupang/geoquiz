@@ -17,6 +17,7 @@ function dom() {
     mapRoundEl: $('map-round'),
     mcOptions: $('mc-options'),
     streakEl: $('g2-streak'),
+    globeCount: $('g2-globe-count'),
   };
 }
 
@@ -159,6 +160,14 @@ function handleOptionClick(selectedName) {
   }
 }
 
+// ── Update globe progress count ──
+function updateGlobeCount() {
+  const d = dom();
+  if (!d.globeCount) return;
+  const found = state.allFound.size;
+  d.globeCount.textContent = `${found} / ${ALL_COUNTRIES.length}`;
+}
+
 // ── Start a Round ──
 function startMapRound() {
   if (stopMapGame) return;
@@ -195,6 +204,7 @@ function startMapRound() {
   const d = dom();
   if (d.mapRoundEl) d.mapRoundEl.textContent = `Round ${mapRound}`;
   updateMapStreak();
+  updateGlobeCount();
 
   if (difficulty === 'normal') {
     // Normal mode: draw target country + 4 nearby neighbors with target highlighted
@@ -215,7 +225,7 @@ function updateMapStreak() {
   const d = dom();
   if (!d.streakEl) return;
   if (g2Streak > 0) {
-    d.streakEl.textContent = `🔥 ${g2Streak}`;
+    d.streakEl.innerHTML = `<i class="ph-bold ph-fire"></i> ${g2Streak}`;
     d.streakEl.className = g2Streak >= 5 ? 'g2-streak hot' : 'g2-streak';
   } else {
     d.streakEl.textContent = '—';

@@ -320,7 +320,7 @@ export async function fetchTopoData() {
     const mapLoading = getMapLoading();
     const mapCanvas = getMapCanvas();
     if (mapLoading) {
-      mapLoading.textContent = '🗺️ Loading world map...';
+      mapLoading.innerHTML = '<i class="ph-duotone ph-map-trifold"></i> Loading world map...';
       mapLoading.classList.remove('hidden');
     }
     if (mapCanvas) mapCanvas.classList.add('hidden');

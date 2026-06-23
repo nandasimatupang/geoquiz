@@ -194,17 +194,17 @@ function showCompletion() {
 
   let icon, title, desc;
   if (selectedContinent) {
-    icon = '🎉';
+    icon = '<i class="ph-duotone ph-confetti"></i>';
     title = 'Continent Complete!';
     desc = `You found every country in ${selectedContinent}!`;
   } else if (CONTINENT_NAMES.every((c) => isContinentComplete(c))) {
-    icon = '🌍';
+    icon = '<i class="ph-duotone ph-globe"></i>';
     title = 'World Complete!';
     desc = 'You found every country in the world! Amazing!';
   } else {
     // Some continents done — suggest next
     const next = CONTINENT_NAMES.find((c) => !isContinentComplete(c));
-    icon = '🌟';
+    icon = '<i class="ph-duotone ph-star"></i>';
     title = 'Keep Going!';
     const done = CONTINENT_NAMES.filter((c) => isContinentComplete(c)).length;
     desc = `${done} / 6 continents complete. Ready for ${next}?`;
@@ -254,7 +254,7 @@ function renderFlagRound() {
   flagRoundNum++;
   if (d.flagRound) d.flagRound.textContent = `Round ${flagRoundNum}`;
   if (d.flagStreak) {
-    d.flagStreak.textContent = currentStreak > 0 ? `🔥 ${currentStreak}` : '—';
+    d.flagStreak.innerHTML = currentStreak > 0 ? `<i class="ph-bold ph-fire"></i> ${currentStreak}` : '—';
     d.flagStreak.className = currentStreak >= 5 ? 'flag-streak hot' : 'flag-streak';
   }
   if (d.flagBest) d.flagBest.textContent = `Best: ${bestStreak}`;
@@ -342,7 +342,7 @@ function handleFlagClick(selectedName) {
 
     // Update streak display immediately
     if (d.flagStreak) {
-      d.flagStreak.textContent = `🔥 ${currentStreak}`;
+      d.flagStreak.innerHTML = `<i class="ph-bold ph-fire"></i> ${currentStreak}`;
       d.flagStreak.className = currentStreak >= 5 ? 'flag-streak hot' : 'flag-streak';
     }
     if (d.flagBest) d.flagBest.textContent = `Best: ${bestStreak}`;

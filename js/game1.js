@@ -32,6 +32,7 @@ function dom() {
     listLetterLabel: $('list-letter-label'),
     clueBtn: $('clue-btn'),
     streakEl: $('g1-streak'),
+    inputWrap: $('country-input')?.closest('.g1-input-wrap'),
   };
 }
 
@@ -78,7 +79,7 @@ export function useClue() {
   if (g1.clueLevel >= 2) return;
   g1.clueLevel++;
   if (g1.clueLevel === 1) {
-    showToast('💡 First letter revealed for all countries!', 'info');
+    showToast('<i class="ph-bold ph-lightbulb"></i> First letter revealed for all countries!', 'info');
   } else {
     const countries = COUNTRIES_BY_LETTER[g1.currentLetter];
     if (countries) {
@@ -88,7 +89,7 @@ export function useClue() {
         }
       });
     }
-    showToast('💡 Extra random letter revealed for each country!', 'info');
+    showToast('<i class="ph-bold ph-lightbulb"></i> Extra random letter revealed for each country!', 'info');
   }
   renderG1();
 }
@@ -160,26 +161,28 @@ export function renderG1() {
 
   if (d.g1CountryList) {
     d.g1CountryList.innerHTML = countries
-      .map((c) => {
+      .map((c, i) => {
         const continent = CONTINENTS[c] || 'Unknown';
         const cl = continentClass(continent);
         const isRev = g1.revealedCountries.has(normalize(c));
-        const flag = isRev ? countryFlagEmoji(c) : '';
         let nameContent, nameClass;
         if (isRev) {
-          nameContent = `${flag} ${c}`;
+          const flag = countryFlagEmoji(c);
+          nameContent = `<span class="country-flag">${flag}</span> ${c}`;
           nameClass = 'revealed';
         } else if (g1.clueLevel >= 2 && g1.secondClueLetters.has(normalize(c))) {
-          nameContent = buildPartialName(c, g1.secondClueLetters.get(normalize(c)));
+          const partial = buildPartialName(c, g1.secondClueLetters.get(normalize(c)));
+          nameContent = `<span class="globe-placeholder">🌍</span> ${partial}`;
           nameClass = 'hidden partial';
         } else if (g1.clueLevel >= 1) {
-          nameContent = buildFirstName(c);
+          const first = buildFirstName(c);
+          nameContent = `<span class="globe-placeholder">🌍</span> ${first}`;
           nameClass = 'hidden partial';
         } else {
-          nameContent = '???';
+          nameContent = `<span class="globe-placeholder">🌍</span> ???`;
           nameClass = 'hidden';
         }
-        return `<div class="country-row${isRev ? ' revealed' : ''}">
+        return `<div class="country-row${isRev ? ' revealed' : ''}" style="animation-delay:${i * 20}ms">
           <span class="continent-badge ${cl}">${continent}</span>
           <span class="country-name ${nameClass}">${nameContent}</span>
         </div>`;
@@ -189,14 +192,17 @@ export function renderG1() {
   }
 
   if (d.clueBtn) {
-    d.clueBtn.textContent = `💡 Clue (${g1.clueLevel}/2)`;
+    const remaining = Math.max(0, 2 - g1.clueLevel);
+    d.clueBtn.innerHTML = `<i class="ph-bold ph-lightbulb"></i>`;
+    d.clueBtn.dataset.clues = remaining > 0 ? String(remaining) : '0';
+    d.clueBtn.title = remaining > 0 ? `Clues remaining: ${remaining}` : 'No more clues';
     d.clueBtn.disabled = g1.clueLevel >= 2;
   }
 
   // Update streak display
   if (d.streakEl) {
     if (g1.streak > 0) {
-      d.streakEl.textContent = `🔥 ${g1.streak}`;
+      d.streakEl.innerHTML = `<i class="ph-bold ph-fire"></i> ${g1.streak}`;
       d.streakEl.className = g1.streak >= 5 ? 'g1-streak hot' : 'g1-streak';
     } else {
       d.streakEl.textContent = '—';
@@ -217,12 +223,12 @@ export function submitG1Guess() {
   if (!countries) return;
   const norm = normalize(raw);
   if (!norm) {
-    d.countryInput.classList.add('error');
+    if (d.inputWrap) d.inputWrap.classList.add('error');
     setG1Feedback('Please type a valid country name', 'error');
     showToast('Not a match!', 'error');
     d.countryInput.value = '';
     updateG1SubmitBtn();
-    setTimeout(() => d.countryInput.classList.remove('error'), 400);
+    setTimeout(() => { if (d.inputWrap) d.inputWrap.classList.remove('error'); }, 400);
     return;
   }
   const matched = countries.find((c) => normalize(c) === norm);
@@ -240,22 +246,22 @@ export function submitG1Guess() {
       gameStats: { game1: g1Stats },
     });
     g1.streak = 0;
-    d.countryInput.classList.add('error');
+    if (d.inputWrap) d.inputWrap.classList.add('error');
     setG1Feedback(`"${raw}" is not a country starting with "${g1.currentLetter}"`, 'error');
     showToast('Not a match!', 'error');
     d.countryInput.value = '';
     updateG1SubmitBtn();
     renderG1();
-    setTimeout(() => d.countryInput.classList.remove('error'), 400);
+    setTimeout(() => { if (d.inputWrap) d.inputWrap.classList.remove('error'); }, 400);
     return;
   }
   if (g1.revealedCountries.has(norm)) {
-    d.countryInput.classList.add('error');
+    if (d.inputWrap) d.inputWrap.classList.add('error');
     setG1Feedback(`"${matched}" already found!`, 'error');
     showToast('Already found!', 'error');
     d.countryInput.value = '';
     updateG1SubmitBtn();
-    setTimeout(() => d.countryInput.classList.remove('error'), 400);
+    setTimeout(() => { if (d.inputWrap) d.inputWrap.classList.remove('error'); }, 400);
     return;
   }
   g1.revealedCountries.add(norm);
@@ -282,13 +288,13 @@ export function submitG1Guess() {
       gameStats: { game1: g1Stats },
     });
   }
-  d.countryInput.classList.add('success');
+  if (d.inputWrap) d.inputWrap.classList.add('success');
   setG1Feedback(`✓ ${matched}`, 'success');
   showToast(`✓ ${matched}`, 'success');
   d.countryInput.value = '';
   updateG1SubmitBtn();
   renderG1();
-  setTimeout(() => d.countryInput.classList.remove('success'), 400);
+  setTimeout(() => { if (d.inputWrap) d.inputWrap.classList.remove('success'); }, 400);
 
   if (g1.revealedCountries.size === countries.length) {
     g1.completedLetters.add(g1.currentLetter);
