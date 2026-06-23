@@ -137,6 +137,7 @@ function endSprint() {
   if (g4Stats.sprintScores.length > MAX_SPRINT_SCORES) g4Stats.sprintScores = g4Stats.sprintScores.slice(-MAX_SPRINT_SCORES);
   if (sprintScore > g4Stats.bestScore) g4Stats.bestScore = sprintScore;
   saveProgress({
+    gameId: 'game4',
     score: state.score,
     totalFound: state.totalFound,
     allFound: state.allFound,
@@ -270,6 +271,7 @@ export function stopSprint() {
   if (sprintRunning && sprintFound.size > 0) {
     // Persist any progress found mid-sprint before stopping
     saveProgress({
+      gameId: 'game4',
       score: state.score,
       totalFound: state.totalFound,
       allFound: state.allFound,

@@ -6,6 +6,7 @@ import { countryFlagEmoji } from './data/flags.js';
 import { fetchTopoData, drawCountryOutline, drawCountryWithNeighbors } from './map-renderer.js';
 import { saveProgress, loadProgress } from './persist.js';
 import { g1 } from './game1.js';
+import { initGlobe, showGlobe, hideGlobe, setGlobeFound } from './globe-progress.js';
 
 // ── DOM refs (lazily resolved) ──
 function dom() {
@@ -104,6 +105,7 @@ function handleOptionClick(selectedName) {
       state.allFound.add(normalize(correctName));
       state.score++;
       state.totalFound++;
+      setGlobeFound(state.allFound);
     }
     // Save per-game stats
     const saved = loadProgress();
@@ -112,6 +114,7 @@ function handleOptionClick(selectedName) {
     g2Stats.correctRounds++;
     if (g2Streak > g2Stats.bestStreak) g2Stats.bestStreak = g2Streak;
     saveProgress({
+      gameId: 'game2',
       score: state.score,
       totalFound: state.totalFound,
       allFound: state.allFound,
@@ -137,6 +140,7 @@ function handleOptionClick(selectedName) {
     const g2Stats2 = saved2?.stats?.game2 || { bestStreak: 0, totalRounds: 0, correctRounds: 0 };
     g2Stats2.totalRounds++;
     saveProgress({
+      gameId: 'game2',
       score: state.score,
       totalFound: state.totalFound,
       allFound: state.allFound,
@@ -233,7 +237,11 @@ export async function startGame2() {
   const data = await fetchTopoData();
   if (mapCountries.length === 0 && data && data.length > 0) {
     mapCountries = data;
+    initGlobe(mapCountries);
   }
+  
+  showGlobe(state.allFound);
+
   if (mapCountries.length > 0 && !stopMapGame) {
     startMapRound();
   }

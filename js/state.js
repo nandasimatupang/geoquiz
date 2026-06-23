@@ -20,15 +20,31 @@ const SCREEN_FROM_HASH = Object.fromEntries(
 import { $ } from './utils.js';
 
 export const state = {
-  score: 0,
-  totalFound: 0,
-  allFound: new Set(),
-  currentGame: null, // 'game1' or 'game2'
-  bestStreak: 0,
+  currentGame: null, // 'game1', 'game2', 'game3', 'game4'
+  gameData: {
+    game1: { score: 0, totalFound: 0, allFound: new Set(), bestStreak: 0, completedLetters: new Set() },
+    game2: { score: 0, totalFound: 0, allFound: new Set(), bestStreak: 0 },
+    game3: { score: 0, totalFound: 0, allFound: new Set(), bestStreak: 0 },
+    game4: { score: 0, totalFound: 0, allFound: new Set(), bestStreak: 0 },
+  },
+
+  get score() { return this.currentGame ? this.gameData[this.currentGame].score : 0; },
+  set score(v) { if (this.currentGame) this.gameData[this.currentGame].score = v; },
+
+  get totalFound() { return this.currentGame ? this.gameData[this.currentGame].totalFound : 0; },
+  set totalFound(v) { if (this.currentGame) this.gameData[this.currentGame].totalFound = v; },
+
+  get allFound() { return this.currentGame ? this.gameData[this.currentGame].allFound : new Set(); },
+  set allFound(v) { if (this.currentGame) this.gameData[this.currentGame].allFound = v; },
+
+  get bestStreak() { return this.currentGame ? this.gameData[this.currentGame].bestStreak : 0; },
+  set bestStreak(v) { if (this.currentGame) this.gameData[this.currentGame].bestStreak = v; },
 };
 
 export function resetBestStreak() {
-  state.bestStreak = 0;
+  if (state.currentGame) {
+    state.gameData[state.currentGame].bestStreak = 0;
+  }
 }
 
 export function updateHeader() {

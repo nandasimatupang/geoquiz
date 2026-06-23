@@ -329,6 +329,7 @@ function handleFlagClick(selectedName) {
     g3Stats.correctFlags++;
     if (currentStreak > g3Stats.bestStreak) g3Stats.bestStreak = currentStreak;
     saveProgress({
+      gameId: 'game3',
       score: state.score,
       totalFound: state.totalFound,
       allFound: state.allFound,
@@ -367,6 +368,7 @@ function handleFlagClick(selectedName) {
     const g3Stats = saved?.stats?.game3 || { bestStreak: 0, totalFlags: 0, correctFlags: 0 };
     g3Stats.totalFlags++;
     saveProgress({
+      gameId: 'game3',
       score: state.score,
       totalFound: state.totalFound,
       allFound: state.allFound,

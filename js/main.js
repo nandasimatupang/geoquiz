@@ -3,7 +3,7 @@ import { state, updateHeader, showScreen, handleRoute } from './state.js';
 import { LETTERS } from './data/countries.js';
 import { renderPicker, startLetter, submitG1Guess, useClue, g1 } from './game1.js';
 import { showStats } from './stats.js';
-import { startGame2, skipRound, handleMcClick, stopGame, setDifficulty } from './game2.js';
+import { startGame2, skipRound, handleMcClick, setDifficulty, stopGame } from './game2.js';
 import { startFlagGame, onFlagOptionClick, stopFlagGame, setContinentFilter } from './game3.js';
 import { startSprint, onSprintInput, onSprintKeydown, submitSprintGuess, onSprintPlayAgain, stopSprint } from './game4.js';
 import { fetchTopoData } from './map-renderer.js';
@@ -18,11 +18,11 @@ if (window.location.search) {
 // ── Restore saved progress (hoisted before any handlers) ──
 const saved = loadProgress();
 if (saved) {
-  state.score = saved.score;
-  state.totalFound = saved.totalFound;
-  state.allFound = saved.allFound;
-  g1.completedLetters = saved.completedLetters;
-  state.bestStreak = saved.bestStreak || 0;
+  state.gameData.game1 = saved.games.game1;
+  state.gameData.game2 = saved.games.game2;
+  state.gameData.game3 = saved.games.game3;
+  state.gameData.game4 = saved.games.game4;
+  g1.completedLetters = state.gameData.game1.completedLetters;
 }
 
 // ── Helper: stop whichever game is currently running ──

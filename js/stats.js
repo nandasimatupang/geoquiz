@@ -15,8 +15,8 @@ const CONTINENT_NAMES = ['Africa', 'Asia', 'Europe', 'North America', 'South Ame
  * Check if a country name is in the allFound set.
  * The allFound set stores normalized names.
  */
-function isFound(name) {
-  return state.allFound.has(normalize(name));
+function isFound(name, gameId) {
+  return state.gameData[gameId].allFound.has(normalize(name));
 }
 
 /**
@@ -32,13 +32,19 @@ function computeStats() {
   };
 
   // Derive completed letters from persisted Set
-  const completedLettersSet = saved?.completedLetters || new Set();
+  const completedLettersSet = saved?.games?.game1?.completedLetters || new Set();
   const completedLetters = LETTERS.filter((l) => completedLettersSet.has(l));
   const remainingLetters = LETTERS.filter((l) => !completedLettersSet.has(l));
 
-  // Total countries found
+  // Total countries found (global aggregation for display if needed)
   const totalCountries = ALL_COUNTRIES.length;
-  const foundCount = state.allFound.size;
+  // Let's use the maximum found among all games as the overall "foundCount"
+  const foundCount = Math.max(
+    state.gameData.game1.allFound.size,
+    state.gameData.game2.allFound.size,
+    state.gameData.game3.allFound.size,
+    state.gameData.game4.allFound.size
+  );
   const foundPct = totalCountries > 0 ? Math.round((foundCount / totalCountries) * 100) : 0;
 
   // Game 1: letter progress
@@ -48,14 +54,14 @@ function computeStats() {
     const countries = COUNTRIES_BY_LETTER[l] || [];
     g1LetterTotal += countries.length;
     countries.forEach((c) => {
-      if (isFound(c)) g1LetterFound++;
+      if (isFound(c, 'game1')) g1LetterFound++;
     });
   });
 
   // Continent breakdown
   const continentProgress = CONTINENT_NAMES.map((name) => {
     const countries = ALL_COUNTRIES.filter((c) => CONTINENTS[c] === name);
-    const found = countries.filter((c) => isFound(c)).length;
+    const found = countries.filter((c) => isFound(c, 'game3')).length;
     return {
       name,
       total: countries.length,
@@ -342,9 +348,10 @@ function executeResetData() {
   clearProgress();
 
   // 2) Reset all in-memory state across every game module
-  state.score = 0;
-  state.totalFound = 0;
-  state.allFound = new Set();
+  state.gameData.game1 = { score: 0, totalFound: 0, allFound: new Set(), bestStreak: 0, completedLetters: new Set() };
+  state.gameData.game2 = { score: 0, totalFound: 0, allFound: new Set(), bestStreak: 0 };
+  state.gameData.game3 = { score: 0, totalFound: 0, allFound: new Set(), bestStreak: 0 };
+  state.gameData.game4 = { score: 0, totalFound: 0, allFound: new Set(), bestStreak: 0 };
 
   resetGame1State();
   resetGame2State();

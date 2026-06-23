@@ -11,6 +11,7 @@
   <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="stylesheet" href="/css/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
   <noscript>
@@ -347,9 +348,16 @@
 
         <div class="map-options-area">
           <div class="mc-options" id="mc-options"></div>
-          <div class="map-actions">
-            <button id="map-back-btn" class="btn btn-secondary map-back">← Back to Menu</button>
+          <div class="map-actions" style="gap: 1rem; flex-wrap: wrap; justify-content: center;">
+            <button id="map-back-btn" class="btn btn-secondary map-back">← Back</button>
             <button id="map-skip-btn" class="btn btn-secondary map-skip">Skip →</button>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem; width: 100%; display: flex; flex-direction: column; align-items: center;">
+          <h3 style="margin-bottom: 1rem; color: #38bdf8; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px;">🌍 Your Progress</h3>
+          <div id="globe-container" style="width: 100%; max-width: 600px; height: 600px; position: relative;">
+            <canvas id="globe-canvas" style="cursor: grab; border-radius: 50%; width: 100%; height: 100%;"></canvas>
           </div>
         </div>
       </div>      <!-- Statistics Screen -->

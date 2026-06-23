@@ -232,6 +232,7 @@ export function submitG1Guess() {
     const g1Stats = saved?.stats?.game1 || { bestStreak: 0, totalGuesses: 0, correctGuesses: 0 };
     g1Stats.totalGuesses++;
     saveProgress({
+      gameId: 'game1',
       score: state.score,
       totalFound: state.totalFound,
       allFound: state.allFound,
@@ -273,6 +274,7 @@ export function submitG1Guess() {
     g1Stats.correctGuesses++;
     if (g1.streak > g1Stats.bestStreak) g1Stats.bestStreak = g1.streak;
     saveProgress({
+      gameId: 'game1',
       score: state.score,
       totalFound: state.totalFound,
       allFound: state.allFound,
@@ -294,6 +296,7 @@ export function submitG1Guess() {
     const g1Stats = saved?.stats?.game1 || { bestStreak: 0, totalGuesses: 0, correctGuesses: 0 };
     if (g1.streak > g1Stats.bestStreak) g1Stats.bestStreak = g1.streak;
     saveProgress({
+      gameId: 'game1',
       score: state.score,
       totalFound: state.totalFound,
       allFound: state.allFound,
