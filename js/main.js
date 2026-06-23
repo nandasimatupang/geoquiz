@@ -1,7 +1,7 @@
 import { $ } from './utils.js';
 import { state, updateHeader, showScreen, handleRoute } from './state.js';
 import { LETTERS } from './data/countries.js';
-import { renderPicker, startLetter, submitG1Guess, useClue, g1 } from './game1.js';
+import { renderPicker, startLetter, submitG1Guess, useClue, g1, skipCurrent, tryAgain } from './game1.js';
 import { showStats } from './stats.js';
 import { startGame2, skipRound, handleMcClick, setDifficulty, stopGame } from './game2.js';
 import { startFlagGame, onFlagOptionClick, stopFlagGame, setContinentFilter } from './game3.js';
@@ -136,6 +136,17 @@ if (nextBtn) {
 
 const clueBtn = $('clue-btn');
 if (clueBtn) clueBtn.addEventListener('click', useClue);
+
+const g1SkipBtn = $('g1-skip-btn');
+if (g1SkipBtn) g1SkipBtn.addEventListener('click', skipCurrent);
+
+// Try Again button is dynamically rendered into the focus card — delegate.
+const gameScreen = $('game-screen');
+if (gameScreen) {
+  gameScreen.addEventListener('click', (e) => {
+    if (e.target.closest('#g1-tryagain-btn')) tryAgain();
+  });
+}
 
 const countryInput = $('country-input');
 const submitBtn = $('submit-btn');

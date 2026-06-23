@@ -794,16 +794,151 @@ header {
 .input-feedback.error { color: var(--error); }
 .input-feedback.info { color: var(--text-muted); }
 
-/* ─── Country List ─── */
+/* ─── Focus Card (one country at a time) ─── */
 
-.g1-list-section {
+.g1-focus-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: linear-gradient(145deg, #1c1c20 0%, #18181b 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.g1-focus-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.g1-focus-header .continent-badge {
+  min-width: 110px;
+  font-size: 12px;
+  padding: 5px 14px;
+}
+
+.g1-focus-name {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  min-height: 56px;
+}
+
+.g1-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.g1-tile.revealed {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--text-primary);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+}
+
+.g1-tile.blank {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  color: transparent;
+}
+
+.g1-space {
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.g1-focus-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* End-of-round / completion message inside the focus card */
+.g1-focus-message {
+  text-align: center;
+  padding: 14px 8px;
+  position: relative;
+}
+
+.g1-focus-message-title {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.g1-focus-message-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.g1-tryagain-btn {
+  margin-top: 14px;
+}
+
+/* Skip button — ghost style */
+.g1-skip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 10px;
+  transition: all var(--transition);
+  flex-shrink: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.g1-skip-btn i { font-size: 14px; }
+
+.g1-skip-btn:hover {
+  color: var(--ocean-accent);
+  border-color: var(--ocean-accent);
+  background: rgba(16, 185, 129, 0.06);
+}
+
+/* Hint button sits inline in the focus card with text */
+.g1-focus-actions .g1-clue-btn {
+  width: auto;
+  height: auto;
+  padding: 8px 18px;
+  font-size: 14px;
+  gap: 8px;
+  border-radius: var(--radius-sm);
+}
+
+/* ─── Found Countries List ─── */
+
+.g1-found-section {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
 }
 
-.g1-list-header {
+.g1-found-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -811,14 +946,14 @@ header {
   padding: 0 4px;
 }
 
-.g1-list-header h3 {
+.g1-found-header h3 {
   font-size: 14px;
   font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: -0.01em;
 }
 
-.g1-list-header h3 span {
+.g1-found-header h3 span {
   color: var(--ocean-accent);
 }
 
@@ -832,7 +967,7 @@ header {
   border: 1px solid rgba(16, 185, 129, 0.15);
 }
 
-.country-list {
+.g1-found-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -840,77 +975,53 @@ header {
   background: #1a1a1e;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  max-height: 340px;
+  max-height: 280px;
   overflow-y: auto;
   box-shadow: var(--shadow-sm);
 }
 
-.country-list::-webkit-scrollbar { width: 4px; }
-.country-list::-webkit-scrollbar-track { background: transparent; }
-.country-list::-webkit-scrollbar-thumb { background: var(--ocean-accent); border-radius: 4px; opacity: 0.3; }
+.g1-found-list::-webkit-scrollbar { width: 4px; }
+.g1-found-list::-webkit-scrollbar-track { background: transparent; }
+.g1-found-list::-webkit-scrollbar-thumb { background: var(--ocean-accent); border-radius: 4px; opacity: 0.3; }
 
-.country-row {
+.g1-found-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 18px 8px;
+}
+
+.g1-found-item {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(16, 185, 129, 0.06);
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
   min-height: 44px;
-}
-
-.country-row.revealed {
-  border-color: rgba(16, 185, 129, 0.3);
-  background: rgba(16, 185, 129, 0.08);
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.12);
   animation: rowReveal 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-
-@keyframes rowReveal {
-  0% { transform: scale(0.95) translateY(4px); opacity: 0.5; }
-  50% { transform: scale(1.02) translateY(-2px); }
-  100% { transform: scale(1) translateY(0); opacity: 1; }
-}
-
-.country-name {
+.g1-found-name {
   font-size: 15px;
-  font-weight: 600;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
+  color: var(--text-primary);
   flex: 1;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.country-name .country-flag {
+.g1-found-name .country-flag {
   font-size: 1.2em;
   line-height: 1;
 }
 
-.country-name.hidden {
-  color: var(--text-muted);
-  letter-spacing: 2px;
-  font-size: 14px;
-}
-
-.country-name.hidden .globe-placeholder {
-  font-size: 1.1em;
-  opacity: 0.5;
-}
-
-.country-name.revealed {
-  color: var(--text-primary);
-  font-weight: 700;
-}
-
-.country-name.partial {
-  letter-spacing: 3px;
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--text-secondary);
+@keyframes rowReveal {
+  0% { transform: scale(0.95) translateY(4px); opacity: 0.5; }
+  50% { transform: scale(1.02) translateY(-2px); }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 .continent-badge {
@@ -954,11 +1065,14 @@ header {
   .g1-input-card { padding: 10px 12px; }
   #country-input { font-size: 15px; padding: 12px 10px; }
   .g1-submit-btn { width: 42px; height: 42px; font-size: 18px; }
-  .g1-clue-btn { width: 42px; height: 42px; font-size: 18px; }
-  .country-list { max-height: 260px; padding: 8px; }
-  .country-row { padding: 8px 10px; min-height: 40px; }
+  .g1-focus-card { padding: 16px; gap: 14px; }
+  .g1-focus-header .continent-badge { min-width: 90px; font-size: 10px; }
+  .g1-tile { width: 30px; height: 38px; font-size: 17px; }
+  .g1-space { width: 10px; }
+  .g1-found-list { max-height: 220px; padding: 8px; }
+  .g1-found-item { padding: 8px 10px; min-height: 40px; }
   .continent-badge { font-size: 9px; min-width: 54px; padding: 3px 8px; }
-  .country-name { font-size: 14px; }
+  .g1-found-name { font-size: 14px; }
 }
 
 /* ═══════════════════════════════════════
@@ -2031,10 +2145,7 @@ header {
   .flag-options { gap: 8px; }
   .flag-option { padding: 12px 14px; font-size: 14px; }
 
-  .country-list { max-height: 260px; padding: 8px; }
-  .country-row { padding: 6px 10px; min-height: 38px; }
   .continent-badge { font-size: 10px; min-width: 50px; padding: 2px 6px; }
-  .country-name { font-size: 14px; }
 
   .map-container { min-height: 240px; padding: 8px; }
 

@@ -114,6 +114,22 @@
           </div>
         </div>
 
+        <!-- Focus Card (one country at a time) -->
+        <div class="g1-focus-card">
+          <div class="g1-focus-header">
+            <span class="continent-badge" id="g1-focus-continent">—</span>
+            <button id="g1-skip-btn" class="g1-skip-btn" title="Skip this country">
+              Skip <i class="ph-bold ph-skip-forward"></i>
+            </button>
+          </div>
+          <div class="g1-focus-name" id="g1-focus-name"></div>
+          <div class="g1-focus-actions">
+            <button id="clue-btn" class="g1-clue-btn" title="Reveal a letter">
+              <i class="ph-bold ph-lightbulb"></i> Hint
+            </button>
+          </div>
+        </div>
+
         <!-- Input Card -->
         <div class="g1-input-card">
           <div class="g1-input-row">
@@ -132,20 +148,17 @@
                 <i class="ph-bold ph-check"></i>
               </button>
             </div>
-            <button id="clue-btn" class="g1-clue-btn" title="Get a Clue">
-              <i class="ph-bold ph-lightbulb"></i>
-            </button>
           </div>
           <div class="input-feedback" id="input-feedback"></div>
         </div>
 
-        <!-- Country List -->
-        <div class="g1-list-section">
-          <div class="g1-list-header">
-            <h3><span id="list-letter-label">A</span> Countries</h3>
+        <!-- Found Countries List -->
+        <div class="g1-found-section">
+          <div class="g1-found-header">
+            <h3><span id="found-count">0</span> Found</h3>
             <span class="found-badge" id="found-badge">0 / 0</span>
           </div>
-          <div class="country-list" id="country-list"></div>
+          <div class="g1-found-list" id="g1-found-list"></div>
         </div>
         
         <!-- Bottom -->
