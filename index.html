@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Test your geography knowledge with 4 fun quiz modes: guess countries by letter, identify country shapes on a map, recognise flags, and race the clock in a timed sprint." />
+  <meta name="theme-color" content="#06b6d4" />
+  <title>Geo Quiz</title>
+  <link rel="preconnect" href="https://flagcdn.com" />
+  <link rel="dns-prefetch" href="https://flagcdn.com" />
+  <link rel="icon" type="image/png" href="/img/logo.png" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <noscript>
+    <p style="text-align:center;padding:2rem;font-family:sans-serif;">Geo Quiz requires JavaScript to run. Please enable JavaScript in your browser settings.</p>
+  </noscript>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="logo" id="logo-btn">
+        <span class="logo-icon">
+          <img src="/img/logo.png" alt="Geo Quiz Logo" width="32" height="32" style="border-radius: 8px; object-fit: cover; display: block;" />
+        </span>
+        <h1>Geo Quiz</h1>
+      </div>
+      <button class="scoreboard" id="scoreboard-btn" title="Statistics">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 20V10"/>
+          <path d="M12 20V4"/>
+          <path d="M6 20v-6"/>
+        </svg>
+      </button>
+    </header>
+
+    <main>
+      <!-- Home / Game Selection Screen -->
+      <div id="home-screen" class="screen active">
+        <div class="home-content">
+          <div class="globe-icon">🌍</div>
+          <h2>Choose a Game</h2>
+          <p class="home-desc">Test your geography knowledge!</p>
+          <div class="game-cards">
+            <div class="game-card" data-game="game1">
+              <span class="game-card-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                  <!-- Letter tile grid background -->
+                  <rect x="4" y="4" width="72" height="72" rx="14" stroke="rgba(6, 182, 212, 0.2)" stroke-width="1.5" fill="rgba(6, 182, 212, 0.04)"/>
+                  <!-- Unselected letter tiles -->
+                  <rect x="10" y="12" width="16" height="16" rx="4" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                  <text x="18" y="24" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-weight="700" font-size="12">A</text>
+                  <rect x="32" y="12" width="16" height="16" rx="4" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                  <text x="40" y="24" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-weight="700" font-size="12">B</text>
+                  <rect x="54" y="12" width="16" height="16" rx="4" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                  <text x="62" y="24" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-weight="700" font-size="12">C</text>
+                  <!-- Selected letter tile (highlighted) -->
+                  <rect x="10" y="36" width="16" height="16" rx="4" fill="rgba(6, 182, 212, 0.15)" stroke="#06b6d4" stroke-width="2"/>
+                  <text x="18" y="48" text-anchor="middle" fill="#06b6d4" font-family="Inter, sans-serif" font-weight="800" font-size="12">D</text>
+                  <rect x="32" y="36" width="16" height="16" rx="4" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                  <text x="40" y="48" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-weight="700" font-size="12">E</text>
+                  <rect x="54" y="36" width="16" height="16" rx="4" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                  <text x="62" y="48" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-weight="700" font-size="12">F</text>
+                  <!-- Unselected tiles bottom row -->
+                  <rect x="10" y="56" width="16" height="16" rx="4" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                  <text x="18" y="68" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-weight="700" font-size="12">G</text>
+                  <rect x="32" y="56" width="16" height="16" rx="4" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                  <text x="40" y="68" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-weight="700" font-size="12">H</text>
+                  <rect x="54" y="56" width="16" height="16" rx="4" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                  <text x="62" y="68" text-anchor="middle" fill="#cbd5e1" font-family="Inter, sans-serif" font-weight="700" font-size="12">I</text>
+                </svg>
+              </span>
+              <div class="game-card-text">
+                <h3>Guess by Letter</h3>
+                <p>Pick a letter and name all countries starting with it</p>
+              </div>
+            </div>
+            <div class="game-card" data-game="game2">
+              <span class="game-card-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                  <!-- Country silhouette: simplified Italy shape (scaled up) -->
+                  <path d="M34 8 L38 10 L43 12 L41 17 L45 21 L47 26 L45 31 L49 36 L47 41 L44 45 L40 49 L35 53 L30 58 L26 62 L21 60 L16 56 L20 50 L18 42 L14 33 L16 24 L20 18 L26 13 Z"
+                    fill="#10b981" opacity="0.15" stroke="#10b981" stroke-width="1.5" stroke-linejoin="round"/>
+                  <path d="M34 8 L38 10 L43 12 L41 17 L45 21 L47 26 L45 31 L49 36 L47 41 L44 45 L40 49 L35 53 L30 58 L26 62 L21 60 L16 56 L20 50 L18 42 L14 33 L16 24 L20 18 L26 13 Z"
+                    fill="none" stroke="#10b981" stroke-width="2.5" stroke-linejoin="round"/>
+                  <!-- Compass rose hints -->
+                  <circle cx="40" cy="40" r="24" stroke="rgba(16, 185, 129, 0.08)" stroke-width="1" stroke-dasharray="4 4" fill="none"/>
+                </svg>
+              </span>
+              <div class="game-card-text">
+                <h3>Guess the Shape</h3>
+                <p>Identify the country from its map outline</p>
+              </div>
+            </div>
+            <div class="game-card" data-game="game3">
+              <span class="game-card-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                  <!-- Flag 1: France (blue, white, red) -->
+                  <rect x="6" y="8" width="30" height="24" rx="2" stroke="rgba(148,163,184,0.2)" stroke-width="1"/>
+                  <rect x="6" y="8" width="10" height="24" fill="#002395"/>
+                  <rect x="16" y="8" width="10" height="24" fill="#fff"/>
+                  <rect x="26" y="8" width="10" height="24" fill="#ED2939"/>
+                  <!-- Flag 2: Germany (black, red, gold) -->
+                  <rect x="44" y="8" width="30" height="24" rx="2" stroke="rgba(148,163,184,0.2)" stroke-width="1"/>
+                  <rect x="44" y="8" width="30" height="8" fill="#000"/>
+                  <rect x="44" y="16" width="30" height="8" fill="#DD0000"/>
+                  <rect x="44" y="24" width="30" height="8" fill="#FFCD00"/>
+                  <!-- Flag 3: Japan (circle fits within rect, no clip needed) -->
+                  <rect x="6" y="42" width="30" height="24" rx="2" stroke="rgba(148,163,184,0.2)" stroke-width="1"/>
+                  <rect x="6" y="42" width="30" height="24" rx="2" fill="#fff"/>
+                  <circle cx="21" cy="54" r="7" fill="#BC002D"/>
+                  <!-- Flag 4: USA stripes -->
+                  <rect x="44" y="42" width="30" height="24" rx="2" stroke="rgba(148,163,184,0.2)" stroke-width="1"/>
+                  <rect x="44" y="42" width="14" height="9" fill="#002868"/>
+                  <rect x="44" y="42" width="30" height="4" fill="#BF0A30"/>
+                  <rect x="44" y="46" width="30" height="4" fill="#fff"/>
+                  <rect x="44" y="50" width="30" height="4" fill="#BF0A30"/>
+                  <rect x="44" y="54" width="30" height="4" fill="#fff"/>
+                  <rect x="44" y="58" width="30" height="4" fill="#BF0A30"/>
+                </svg>
+              </span>
+              <div class="game-card-text">
+                <h3>Flag Guesser</h3>
+                <p>Identify the country from its flag</p>
+              </div>
+            </div>
+            <div class="game-card" data-game="game4">
+              <span class="game-card-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                  <circle cx="40" cy="40" r="30" stroke="#fbbf24" stroke-width="2.5" fill="rgba(251, 191, 36, 0.06)"/>
+                  <!-- All 12 hour tick marks -->
+                  <line x1="40" y1="14" x2="40" y2="19" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="40" y1="61" x2="40" y2="66" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="14" y1="40" x2="19" y2="40" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="61" y1="40" x2="66" y2="40" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="20.7" y1="20.7" x2="24.1" y2="24.1" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                  <line x1="59.3" y1="20.7" x2="55.9" y2="24.1" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                  <line x1="20.7" y1="59.3" x2="24.1" y2="55.9" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                  <line x1="59.3" y1="59.3" x2="55.9" y2="55.9" stroke="#cbd5e1" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                  <!-- Hour hand (pointing to ~10) -->
+                  <line x1="40" y1="40" x2="24" y2="26" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
+                  <!-- Minute hand (pointing to ~2) -->
+                  <line x1="40" y1="40" x2="54" y2="22" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Second hand (thin, pointing to ~7) -->
+                  <line x1="40" y1="46" x2="32" y2="46" stroke="#f97316" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+                  <!-- Center dot -->
+                  <circle cx="40" cy="40" r="3" fill="#f59e0b"/>
+                </svg>
+              </span>
+              <div class="game-card-text">
+                <h3>Timed Sprint</h3>
+                <p>Name as many countries as you can in 60 seconds</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game 1: Letter Picker Screen -->
+      <div id="picker-screen" class="screen">
+        <div class="picker-content">
+          <div class="globe-icon">🔤</div>
+          <h2>Pick a Letter</h2>
+          <p class="picker-desc">Choose a letter to guess countries that start with it</p>
+          <div class="letter-grid" id="letter-grid"></div>
+          <button id="random-btn" class="btn btn-primary btn-large">🎲 Random Letter</button>
+        </div>
+      </div>
+
+      <!-- Game 1: Letter Game Screen -->
+      <div id="game-screen" class="screen">
+        <div class="game-header">
+          <div class="letter-display">
+            <span class="letter" id="current-letter">A</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+          <div class="progress-text" id="progress-text">0 / 0 countries found</div>
+          <div class="streak-row">
+            <span class="g1-streak" id="g1-streak">—</span>
+          </div>
+        </div>
+
+        <div class="input-area">
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="country-input"
+              placeholder="Type a country name..."
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+            <button id="submit-btn" class="btn btn-primary" disabled>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </button>
+          </div>
+          <div class="input-feedback" id="input-feedback"></div>
+          <button id="clue-btn" class="btn btn-secondary clue-global">💡 Clue (0/2)</button>
+        </div>
+
+        <div class="nav-row">
+          <button id="back-btn" class="btn btn-secondary btn-back">← Back to Letters</button>
+          <button id="next-btn" class="btn btn-secondary btn-next">Next Letter →</button>
+        </div>
+
+        <div class="country-list-container">
+          <div class="country-list-header">
+            <h3>Countries starting with <span id="list-letter-label">A</span></h3>
+            <span class="found-badge" id="found-badge">0 / 0</span>
+          </div>
+          <div class="country-list" id="country-list"></div>
+        </div>
+
+      </div>
+
+      <!-- Game 3: Flag Game Screen -->
+      <div id="flaggame-screen" class="screen">
+        <div class="flaggame-header">
+          <div class="flaggame-stats">
+            <span class="flag-round" id="flag-round">Round 1</span>
+            <span class="flag-streak" id="flag-streak">—</span>
+            <span class="flag-best" id="flag-best">Best: 0</span>
+          </div>
+          <div class="flag-continent-filter" id="flag-continent-filter">
+            <button class="fc-btn active" data-continent="all">🌍 All</button>
+            <button class="fc-btn" data-continent="Africa">🌍 Africa</button>
+            <button class="fc-btn" data-continent="Asia">🌏 Asia</button>
+            <button class="fc-btn" data-continent="Europe">🌍 Europe</button>
+            <button class="fc-btn" data-continent="North America">🌎 N. America</button>
+            <button class="fc-btn" data-continent="South America">🌎 S. America</button>
+            <button class="fc-btn" data-continent="Oceania">🌏 Oceania</button>
+          </div>
+          <div class="flag-progress-container">
+            <div class="flag-progress-bar" id="flag-progress"></div>
+          </div>
+          <span class="flag-progress-text" id="flag-progress-text">0 / 197</span>
+        </div>
+
+        <div class="flag-display-area">
+          <div class="flag-display" id="flag-display">🇺🇸</div>
+          <div class="flag-options" id="flag-options"></div>
+        </div>
+
+        <div class="flag-footer">
+          <span class="flag-tip">Click the country name that matches this flag</span>
+        </div>
+      </div>
+
+      <!-- Game 4: Timed Sprint Screen -->
+      <div id="sprint-screen" class="screen">
+        <div class="sprint-header">
+          <div class="sprint-timer-wrap">
+            <span class="sprint-timer" id="sprint-timer">1:00</span>
+            <div class="sprint-timer-track">
+              <div class="sprint-timer-bar" id="sprint-timer-bar"></div>
+            </div>
+          </div>
+          <div class="sprint-stats">
+            <div class="sprint-stat">
+              <span class="sprint-stat-label">Score</span>
+              <span class="sprint-stat-value" id="sprint-score">0</span>
+            </div>
+            <div class="sprint-stat">
+              <span class="sprint-stat-label">Best</span>
+              <span class="sprint-stat-value" id="sprint-best">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sprint-input-area">
+          <div class="sprint-input-wrapper">
+            <input
+              type="text"
+              id="sprint-input"
+              placeholder="Type any country name..."
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+            <button id="sprint-submit-btn" class="btn btn-primary" disabled>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </button>
+          </div>
+          <div class="sprint-feedback" id="sprint-feedback"></div>
+        </div>
+
+        <div class="sprint-list-container">
+          <div class="sprint-list-header">
+            <h3>Found countries</h3>
+          </div>
+          <div class="sprint-list" id="sprint-list"></div>
+        </div>
+
+        <!-- Results Overlay -->
+        <div class="sprint-overlay hidden" id="sprint-overlay">
+          <div class="sprint-overlay-content">
+            <div class="sprint-overlay-icon">⏱️</div>
+            <h2 class="sprint-overlay-title">Time's Up!</h2>
+            <div class="sprint-overlay-newbest hidden" id="sprint-result-newbest">🏆 New Best!</div>
+            <div class="sprint-overlay-scores">
+              <div class="sprint-overlay-stat">
+                <span class="sprint-overlay-label">Score</span>
+                <span class="sprint-overlay-value" id="sprint-result-score">0</span>
+              </div>
+              <div class="sprint-overlay-stat">
+                <span class="sprint-overlay-label">Best</span>
+                <span class="sprint-overlay-value" id="sprint-result-best">0</span>
+              </div>
+            </div>
+            <div class="sprint-overlay-countries">
+              <h4>Countries found</h4>
+              <div class="sprint-overlay-list" id="sprint-result-list"></div>
+            </div>
+            <div class="sprint-overlay-actions">
+              <button id="sprint-play-again" class="btn btn-primary btn-large">🔄 Play Again</button>
+              <button id="sprint-home-btn" class="btn btn-secondary">← Back to Menu</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game 2: Map Game Screen -->
+      <div id="mapgame-screen" class="screen">
+        <div class="mapgame-header">
+          <div class="mapgame-status">
+            <span class="mapgame-round" id="map-round">Round 1</span>
+            <span class="g2-streak" id="g2-streak">—</span>
+            <div class="mapgame-difficulty" id="map-difficulty">
+              <button class="diff-btn active" data-diff="normal">Normal</button>
+              <button class="diff-btn" data-diff="hard">Hard</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-container">
+          <div class="map-loading" id="map-loading">🗺️ Loading map data...</div>
+          <canvas id="map-canvas" width="500" height="400"></canvas>
+        </div>
+
+        <div class="map-options-area">
+          <div class="mc-options" id="mc-options"></div>
+          <div class="map-actions">
+            <button id="map-back-btn" class="btn btn-secondary map-back">← Back to Menu</button>
+            <button id="map-skip-btn" class="btn btn-secondary map-skip">Skip →</button>
+          </div>
+        </div>
+      </div>      <!-- Statistics Screen -->
+      <div id="stats-screen" class="screen">
+        <div class="stats-header">
+          <div class="stats-header-top">
+            <button class="stats-back-btn" id="stats-back-btn">← Back</button>
+            <h2>📊 Statistics</h2>
+          </div>
+        </div>
+        <div class="stats-scroll">
+          <div id="stats-game1"></div>
+          <div id="stats-game2"></div>
+          <div id="stats-game3"></div>
+          <div id="stats-game4"></div>
+          <div id="stats-accuracy"></div>
+          <div class="stats-reset-section">
+            <button id="stats-reset-btn" class="stats-reset-btn">🗑️ Reset All Data</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Confirm Reset Modal -->
+    <div id="confirm-modal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="modal-icon">⚠️</div>
+        <h2>Reset Data</h2>
+        <p>Are you sure you want to reset ALL progress and stats? This cannot be undone.</p>
+        <div class="modal-actions">
+          <button id="confirm-cancel-btn" class="btn btn-secondary">Cancel</button>
+          <button id="confirm-yes-btn" class="btn btn-primary" style="background: linear-gradient(135deg, #f43f5e, #be123c); box-shadow: 0 4px 14px rgba(244, 63, 94, 0.3); border-color: rgba(244, 63, 94, 0.5);">Yes, Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
