@@ -99,7 +99,6 @@ function computeStats() {
     g1LetterFound,
     g1LetterTotal,
     continentProgress,
-    avgSprint,
     g1Completion,
     g2Completion,
     g3Completion,
