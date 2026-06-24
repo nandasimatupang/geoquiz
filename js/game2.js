@@ -165,7 +165,12 @@ function updateGlobeCount() {
   const d = dom();
   if (!d.globeCount) return;
   const found = state.allFound.size;
-  d.globeCount.textContent = `${found} / ${ALL_COUNTRIES.length}`;
+  const total = ALL_COUNTRIES.length;
+  d.globeCount.textContent = `${found} / ${total}`;
+  const fill = document.getElementById('g2-progress-fill');
+  if (fill) {
+    fill.style.width = `${(found / total) * 100}%`;
+  }
 }
 
 // ── Start a Round ──

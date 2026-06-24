@@ -35,12 +35,23 @@ function initMapCanvas() {
   mapCtx.scale(dpr, dpr);
 }
 
+function unroll(lon, refLon) {
+  let adjusted = lon;
+  while (adjusted - refLon > 180) adjusted -= 360;
+  while (refLon - adjusted > 180) adjusted += 360;
+  return adjusted;
+}
+
 function getBBox(feature) {
   let minLon = Infinity, maxLon = -Infinity;
   let minLat = Infinity, maxLat = -Infinity;
+  let refLon = null;
   function walkCoords(coords) {
     if (typeof coords[0] === 'number') {
-      const lon = coords[0], lat = coords[1];
+      let lon = coords[0];
+      const lat = coords[1];
+      if (refLon === null) refLon = lon;
+      lon = unroll(lon, refLon);
       if (lon < minLon) minLon = lon;
       if (lon > maxLon) maxLon = lon;
       if (lat < minLat) minLat = lat;
@@ -55,6 +66,7 @@ function getBBox(feature) {
     cy: (minLat + maxLat) / 2,
     w: maxLon - minLon,
     h: maxLat - minLat,
+    refLon: refLon,
   };
 }
 
@@ -78,10 +90,13 @@ export function drawCountryOutline(geoFeature) {
   const scaleY = (mapH * (1 - 2 * PAD)) / bbox.h;
   const scale = Math.min(scaleX, scaleY);
 
-  const project = (lon, lat) => [
-    mapW / 2 + (lon - bbox.cx) * cosLat * scale,
-    mapH / 2 - (lat - bbox.cy) * scale,
-  ];
+  const project = (lon, lat) => {
+    lon = unroll(lon, bbox.refLon);
+    return [
+      mapW / 2 + (lon - bbox.cx) * cosLat * scale,
+      mapH / 2 - (lat - bbox.cy) * scale,
+    ];
+  };
 
   ctx.clearRect(0, 0, mapW, mapH);
 
@@ -100,12 +115,12 @@ export function drawCountryOutline(geoFeature) {
       });
       ctx.closePath();
       ctx.save();
-      ctx.shadowColor = 'rgba(6, 182, 212, 0.2)';
-      ctx.shadowBlur = 20;
-      ctx.fillStyle = '#0d9488';
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#10b981';
       ctx.fill();
       ctx.restore();
-      ctx.fillStyle = '#14b8a6';
+      ctx.fillStyle = '#10b981';
       ctx.fill();
     });
   });
@@ -119,14 +134,8 @@ export function drawCountryOutline(geoFeature) {
         i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       });
       ctx.closePath();
-      ctx.strokeStyle = 'rgba(6, 182, 212, 0.12)';
-      ctx.lineWidth = 10;
-      ctx.stroke();
-      ctx.strokeStyle = '#06b6d4';
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
-      ctx.strokeStyle = 'rgba(245, 158, 11, 0.15)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'transparent';
+      ctx.lineWidth = 0;
       ctx.stroke();
     });
   });
@@ -156,7 +165,10 @@ function findNeighbors(name, allMapCountries, count = 4) {
       if (!ct) return { ...c, dist: Infinity };
       // Approximate geographic distance using Haversine-like lon/lat diff
       const dLat = (ct.cy - target.cy) * 111;
-      const dLon = (ct.cx - target.cx) * 111 * Math.cos((target.cy * Math.PI) / 180);
+      let dLon = ct.cx - target.cx;
+      while (dLon > 180) dLon -= 360;
+      while (dLon < -180) dLon += 360;
+      dLon = dLon * 111 * Math.cos((target.cy * Math.PI) / 180);
       return { ...c, dist: Math.sqrt(dLat * dLat + dLon * dLon) };
     })
     .sort((a, b) => a.dist - b.dist)
@@ -234,19 +246,22 @@ export function drawCountryWithNeighbors(targetName, allMapCountries) {
   const scaleY = (mapH * (1 - 2 * PAD)) / bbox.h;
   const scale = Math.min(scaleX, scaleY);
 
-  const project = (lon, lat) => [
-    mapW / 2 + (lon - bbox.cx) * cosLat * scale,
-    mapH / 2 - (lat - bbox.cy) * scale,
-  ];
+  const project = (lon, lat) => {
+    lon = unroll(lon, bbox.refLon);
+    return [
+      mapW / 2 + (lon - bbox.cx) * cosLat * scale,
+      mapH / 2 - (lat - bbox.cy) * scale,
+    ];
+  };
 
   ctx.clearRect(0, 0, mapW, mapH);
 
   // Layer 1: neighbor countries (faint fill, visible border)
   const neighborFeatures = neighbors.map((n) => ({
     feature: n.feature,
-    fill: 'rgba(20, 184, 166, 0.10)',
-    stroke: 'rgba(0, 0, 0, 0.30)',
-    strokeWidth: 1.5,
+    fill: 'rgba(21, 128, 61, 0.4)',
+    stroke: null,
+    strokeWidth: 0,
     shadow: null,
   }));
   drawMapFeatures(neighborFeatures, project);
@@ -255,32 +270,11 @@ export function drawCountryWithNeighbors(targetName, allMapCountries) {
   const targetFeatures = [
     {
       feature: target.feature,
-      fill: '#0d9488',
-      stroke: 'rgba(6, 182, 212, 0.12)',
-      strokeWidth: 12,
-      shadow: { color: 'rgba(6, 182, 212, 0.3)', blur: 25 },
-    },
-    {
-      feature: target.feature,
-      fill: '#14b8a6',
+      fill: '#10b981',
       stroke: null,
       strokeWidth: 0,
       shadow: null,
-    },
-    {
-      feature: target.feature,
-      fill: null,
-      stroke: '#06b6d4',
-      strokeWidth: 3,
-      shadow: null,
-    },
-    {
-      feature: target.feature,
-      fill: null,
-      stroke: 'rgba(245, 158, 11, 0.25)',
-      strokeWidth: 1.5,
-      shadow: null,
-    },
+    }
   ];
   drawMapFeatures(targetFeatures, project);
 }
@@ -288,9 +282,13 @@ export function drawCountryWithNeighbors(targetName, allMapCountries) {
 function getCombinedBBox(features) {
   let minLon = Infinity, maxLon = -Infinity;
   let minLat = Infinity, maxLat = -Infinity;
+  let refLon = null;
   function walkCoords(coords) {
     if (typeof coords[0] === 'number') {
-      const lon = coords[0], lat = coords[1];
+      let lon = coords[0];
+      const lat = coords[1];
+      if (refLon === null) refLon = lon;
+      lon = unroll(lon, refLon);
       if (lon < minLon) minLon = lon;
       if (lon > maxLon) maxLon = lon;
       if (lat < minLat) minLat = lat;
@@ -305,6 +303,7 @@ function getCombinedBBox(features) {
     cy: (minLat + maxLat) / 2,
     w: maxLon - minLon,
     h: maxLat - minLat,
+    refLon: refLon,
   };
 }
 

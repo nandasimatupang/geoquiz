@@ -67,9 +67,9 @@ function doRender() {
     path(country.feature);
 
     if (foundSet.has(normalize(country.name))) {
-      context.fillStyle = '#065f46';
+      context.fillStyle = '#10b981';
     } else {
-      context.fillStyle = '#34d399';
+      context.fillStyle = 'rgba(21, 128, 61, 0.4)';
     }
 
     context.fill();

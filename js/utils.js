@@ -3,14 +3,8 @@ const $ = (id) => document.getElementById(id);
 let toastTimeout;
 
 function showToast(msg, type = 'info') {
-  const toast = $('toast');
-  if (!toast) return;
-  toast.innerHTML = msg;
-  toast.className = `toast ${type}`;
-  void toast.offsetWidth;
-  toast.classList.add('show');
-  clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => toast.classList.remove('show'), 2200);
+  // Disabled to remove bottom popup messages
+  return;
 }
 
 function normalize(str) {
