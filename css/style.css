@@ -2028,8 +2028,8 @@ header {
   .game-card-text h3 { font-size: 14px; }
   .game-card-text p { font-size: 11px; }
 
-  .flag-display .flag-img { width: 110px; }
-  .flag-loading { width: 110px; }
+  .flag-display .flag-img { width: 180px; }
+  .flag-loading { width: 180px; }
   .flag-options { gap: 8px; }
   .flag-option { padding: 12px 14px; font-size: 14px; }
 
