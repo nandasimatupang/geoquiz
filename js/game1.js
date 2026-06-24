@@ -23,6 +23,7 @@ export const g1 = {
   bestStreak: 0,
   _lastRenderedLetter: null,
   _advancing: false, // guards against double-submit during the success delay
+  isRandomMode: false,
 };
 
 const MAX_CLUES = 3;
@@ -326,7 +327,7 @@ function updateProgress() {
   }
 
   if (d.progressBar) d.progressBar.style.width = `${total > 0 ? (revealed / total) * 100 : 0}%`;
-  if (d.progressText) d.progressText.textContent = `${revealed} / ${total} found`;
+  if (d.progressText) d.progressText.textContent = `${revealed} / ${total}`;
 
   if (d.streakEl) {
     if (g1.streak > 0) {
@@ -360,12 +361,13 @@ function persist(gameStatsMutator) {
 function renderFocusMessage(title, desc, showTryAgain, showNextBtn = false) {
   const d = dom();
   if (!d.focusName) return;
-  // Hide continent + actions for the message state
-  if (d.focusContinent) d.focusContinent.style.visibility = 'hidden';
-  const skipBtn = $('g1-skip-btn');
-  if (skipBtn) skipBtn.style.visibility = 'hidden';
-  const clueBtn = d.clueBtn;
-  if (clueBtn) clueBtn.style.visibility = 'hidden';
+  // Hide chrome for the message state
+  const header = document.querySelector('.g1-focus-header');
+  if (header) header.style.display = 'none';
+  const actions = document.querySelector('.g1-focus-actions');
+  if (actions) actions.style.display = 'none';
+  const inputRow = document.querySelector('.g1-input-row');
+  if (inputRow) inputRow.style.display = 'none';
 
   d.focusName.innerHTML = `
     <div class="g1-focus-message">
@@ -379,11 +381,12 @@ function renderFocusMessage(title, desc, showTryAgain, showNextBtn = false) {
 }
 
 function restoreFocusChrome() {
-  const d = dom();
-  if (d.focusContinent) d.focusContinent.style.visibility = '';
-  const skipBtn = $('g1-skip-btn');
-  if (skipBtn) skipBtn.style.visibility = '';
-  if (d.clueBtn) d.clueBtn.style.visibility = '';
+  const header = document.querySelector('.g1-focus-header');
+  if (header) header.style.display = '';
+  const actions = document.querySelector('.g1-focus-actions');
+  if (actions) actions.style.display = '';
+  const inputRow = document.querySelector('.g1-input-row');
+  if (inputRow) inputRow.style.display = '';
 }
 
 // ── Completion: every country for this letter found ──

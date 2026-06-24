@@ -53,7 +53,11 @@ if (scoreboardBtn) {
 const statsBackBtn = $('stats-back-btn');
 if (statsBackBtn) {
   statsBackBtn.addEventListener('click', () => {
-    showScreen('home-screen');
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      showScreen('home-screen');
+    }
   });
 }
 
@@ -90,7 +94,10 @@ const letterGrid = $('letter-grid');
 if (letterGrid) {
   letterGrid.addEventListener('click', (e) => {
     const btn = e.target.closest('.letter-btn');
-    if (btn) startLetter(btn.dataset.letter);
+    if (btn) {
+      g1.isRandomMode = false;
+      startLetter(btn.dataset.letter);
+    }
   });
 }
 
@@ -99,6 +106,7 @@ if (randomBtn) {
   randomBtn.addEventListener('click', () => {
     const avail = LETTERS.filter((l) => !g1.completedLetters.has(l));
     const pool = avail.length > 0 ? avail : LETTERS;
+    g1.isRandomMode = true;
     startLetter(pool[Math.floor(Math.random() * pool.length)]);
   });
 }
@@ -126,13 +134,23 @@ if (gameScreen) {
     if (e.target.closest('#g1-tryagain-btn')) tryAgain();
     
     if (e.target.closest('#g1-next-btn') || e.target.closest('#g1-top-next-btn')) {
-      const idx = LETTERS.indexOf(g1.currentLetter);
+      const avail = LETTERS.filter((l) => !g1.completedLetters.has(l));
+      if (avail.length === 0) {
+        showScreen('picker-screen');
+        renderPicker();
+        return;
+      }
       let next = null;
-      for (let i = 1; i <= LETTERS.length; i++) {
-        const l = LETTERS[(idx + i) % LETTERS.length];
-        if (!g1.completedLetters.has(l)) {
-          next = l;
-          break;
+      if (g1.isRandomMode) {
+        next = avail[Math.floor(Math.random() * avail.length)];
+      } else {
+        const idx = LETTERS.indexOf(g1.currentLetter);
+        for (let i = 1; i <= LETTERS.length; i++) {
+          const l = LETTERS[(idx + i) % LETTERS.length];
+          if (!g1.completedLetters.has(l)) {
+            next = l;
+            break;
+          }
         }
       }
       if (next) {
@@ -157,6 +175,12 @@ if (countryInput) {
       fb.textContent = countryInput.value.trim().length > 0 ? 'Press Enter to submit' : '';
       fb.className = 'input-feedback info';
     }
+  });
+
+  countryInput.addEventListener('focus', () => {
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 150);
   });
   countryInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); submitG1Guess(); }

@@ -101,21 +101,21 @@
         <div class="g1-hero">
           <div class="g1-hero-top">
             <button id="back-btn" class="back-btn"><i class="ph-bold ph-arrow-left"></i> Letters</button>
-            <span class="g1-streak" id="g1-streak">—</span>
+            <div class="g1-letter-badge" id="current-letter">A</div>
             <button id="g1-top-next-btn" class="back-btn" title="Skip this letter">Next <i class="ph-bold ph-arrow-right"></i></button>
           </div>
           <div class="g1-hero-body">
-            <div class="g1-letter-badge" id="current-letter">A</div>
             <div class="g1-hero-stats">
-              <div class="g1-hero-label" id="progress-text">0 / 11 found</div>
+              <div class="g1-hero-label" id="progress-text">0 / 11</div>
               <div class="g1-progress-track">
                 <div class="g1-progress-fill" id="progress-bar"></div>
               </div>
             </div>
+            <span class="g1-streak" id="g1-streak">—</span>
           </div>
         </div>
 
-        <!-- Focus Card (one country at a time) -->
+        <!-- Focus & Input Card (Merged) -->
         <div class="g1-focus-card">
           <div class="g1-focus-header">
             <span class="continent-badge" id="g1-focus-continent">—</span>
@@ -129,10 +129,6 @@
               <i class="ph-bold ph-lightbulb"></i> Clue
             </button>
           </div>
-        </div>
-
-        <!-- Input Card -->
-        <div class="g1-input-card">
           <div class="g1-input-row">
             <div class="g1-input-wrap">
               <i class="ph-bold ph-search g1-input-icon"></i>
@@ -150,7 +146,6 @@
               </button>
             </div>
           </div>
-          <div class="input-feedback" id="input-feedback"></div>
         </div>
 
         <!-- Found Countries List -->
@@ -316,7 +311,7 @@
       <div id="stats-screen" class="screen">
         <div class="stats-header">
           <div class="stats-header-top">
-            <button class="back-btn" id="stats-back-btn"><i class="ph-bold ph-arrow-left"></i> Stats</button>
+            <button class="back-btn" id="stats-back-btn"><i class="ph-bold ph-arrow-left"></i></button>
             <h2><i class="ph-bold ph-chart-bar"></i> Statistics</h2>
           </div>
         </div>
