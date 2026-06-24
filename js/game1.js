@@ -25,7 +25,7 @@ export const g1 = {
   _advancing: false, // guards against double-submit during the success delay
 };
 
-const MAX_CLUES = 2;
+const MAX_CLUES = 3;
 
 // ── DOM refs (resolved lazily) ──
 function dom() {
@@ -131,9 +131,16 @@ function currentFocused() {
 
 // ── Clue System (per country, up to MAX_CLUES reveals) ──
 export function useClue() {
-  if (g1.currentClueLevel >= MAX_CLUES) return;
   const focused = currentFocused();
   if (!focused) return;
+
+  if (g1.currentClueLevel >= MAX_CLUES) {
+    // Reveal full name
+    const allIndices = letterIndices(focused);
+    allIndices.forEach((i) => g1.revealedPositions.add(i));
+    renderFocusCard();
+    return;
+  }
 
   // Candidate positions: letters not already revealed.
   const candidates = letterIndices(focused).filter(
@@ -146,9 +153,12 @@ export function useClue() {
   g1.currentClueLevel++;
 
   const remaining = Math.max(0, MAX_CLUES - g1.currentClueLevel);
-  showToast(`<i class="ph-bold ph-lightbulb"></i> Letter revealed! ${remaining} hint${remaining === 1 ? '' : 's'} left.`, 'info');
+  if (remaining > 0) {
+    showToast(`<i class="ph-bold ph-lightbulb"></i> Letter revealed! ${remaining} clue${remaining === 1 ? '' : 's'} left.`, 'info');
+  } else {
+    showToast(`<i class="ph-bold ph-eye"></i> All clues used! Click Reveal to show answer.`, 'info');
+  }
   renderFocusCard();
-  updateClueButton();
 }
 
 // ── Letter Picker ──
@@ -194,6 +204,7 @@ export function startLetter(letter) {
   if (g1.queue.length === 0) {
     renderCompletion();
   } else {
+    restoreFocusChrome();
     renderFocusCard();
   }
 
@@ -246,11 +257,28 @@ export function renderFocusCard() {
 function updateClueButton() {
   const d = dom();
   if (!d.clueBtn) return;
+  const focused = currentFocused();
+  if (!focused) {
+    d.clueBtn.disabled = true;
+    return;
+  }
+  
   const remaining = Math.max(0, MAX_CLUES - g1.currentClueLevel);
-  d.clueBtn.innerHTML = `<i class="ph-bold ph-lightbulb"></i> Hint`;
-  d.clueBtn.dataset.clues = remaining > 0 ? String(remaining) : '0';
-  d.clueBtn.title = remaining > 0 ? `${remaining} hint${remaining === 1 ? '' : 's'} left` : 'No more hints';
-  d.clueBtn.disabled = g1.currentClueLevel >= MAX_CLUES || !currentFocused();
+  if (g1.currentClueLevel >= MAX_CLUES) {
+    // Check if fully revealed
+    const allIndices = letterIndices(focused);
+    const allRevealed = allIndices.every((i) => g1.revealedPositions.has(i));
+    
+    d.clueBtn.innerHTML = `<i class="ph-bold ph-eye"></i> Reveal`;
+    d.clueBtn.dataset.clues = '0';
+    d.clueBtn.title = 'Reveal full answer';
+    d.clueBtn.disabled = allRevealed;
+  } else {
+    d.clueBtn.innerHTML = `<i class="ph-bold ph-lightbulb"></i> Clue`;
+    d.clueBtn.dataset.clues = String(remaining);
+    d.clueBtn.title = `${remaining} clue${remaining === 1 ? '' : 's'} left`;
+    d.clueBtn.disabled = false;
+  }
 }
 
 // ── Render the found-countries list (newest first) ──
@@ -306,7 +334,7 @@ function updateProgress() {
   if (d.streakEl) {
     if (g1.streak > 0) {
       d.streakEl.innerHTML = `<i class="ph-bold ph-fire"></i> ${g1.streak}`;
-      d.streakEl.className = g1.streak >= 5 ? 'g1-streak hot' : 'g1-streak';
+      d.streakEl.className = g1.streak >= 5 ? 'g1-streak hot' : 'g1-streak active';
     } else {
       d.streakEl.textContent = '—';
       d.streakEl.className = 'g1-streak';
@@ -332,7 +360,7 @@ function persist(gameStatsMutator) {
 }
 
 // ── Render completion / end-of-round state in the focus card ──
-function renderFocusMessage(title, desc, showTryAgain) {
+function renderFocusMessage(title, desc, showTryAgain, showNextBtn = false) {
   const d = dom();
   if (!d.focusName) return;
   // Hide continent + actions for the message state
@@ -346,7 +374,10 @@ function renderFocusMessage(title, desc, showTryAgain) {
     <div class="g1-focus-message">
       <div class="g1-focus-message-title">${title}</div>
       <div class="g1-focus-message-desc">${desc}</div>
-      ${showTryAgain ? `<button id="g1-tryagain-btn" class="btn btn-primary g1-tryagain-btn"><i class="ph-bold ph-arrows-clockwise"></i> Try Remaining</button>` : ''}
+      <div class="g1-focus-message-actions">
+        ${showTryAgain ? `<button id="g1-tryagain-btn" class="btn btn-secondary g1-tryagain-btn"><i class="ph-bold ph-arrows-clockwise"></i> Try Remaining</button>` : ''}
+        ${showNextBtn ? `<button id="g1-next-btn" class="btn btn-primary"><i class="ph-bold ph-arrow-right"></i> Next Letter</button>` : ''}
+      </div>
     </div>`;
 }
 
@@ -366,7 +397,8 @@ function renderCompletion() {
   renderFocusMessage(
     '🎉 All found!',
     `You named all ${countries.length} countries for ${g1.currentLetter}.`,
-    false
+    false,
+    true
   );
 }
 
@@ -378,7 +410,8 @@ function renderEndOfRound() {
   renderFocusMessage(
     'Round done!',
     `Found ${found} of ${countries.length}. ${remaining} still to find.`,
-    remaining > 0
+    remaining > 0,
+    true
   );
 }
 

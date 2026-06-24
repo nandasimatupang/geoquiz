@@ -514,10 +514,20 @@ header {
 }
 
 .g1-hero-top {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   margin-bottom: 16px;
+}
+
+.g1-hero-top > :first-child {
+  justify-self: start;
+}
+.g1-hero-top > :nth-child(2) {
+  justify-self: center;
+}
+.g1-hero-top > :last-child {
+  justify-self: end;
 }
 
 
@@ -607,17 +617,35 @@ header {
 /* ─── Streak (Game 1) ─── */
 
 .g1-streak {
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--text-muted);
-  min-width: 40px;
-  text-align: right;
-  transition: all 0.3s ease;
+  min-width: 44px;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid transparent;
+}
+
+.g1-streak.active {
+  color: var(--sunshine);
+  background: var(--sunshine-light);
+  border-color: rgba(251, 191, 36, 0.2);
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.15);
 }
 
 .g1-streak.hot {
-  color: var(--sunshine);
+  color: #fff;
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
   animation: streakPulse 0.6s ease-in-out infinite alternate;
+  border-color: transparent;
 }
 
 /* ─── Input Card ─── */
@@ -889,8 +917,17 @@ header {
   color: var(--text-secondary);
 }
 
+.g1-focus-message-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
 .g1-tryagain-btn {
-  margin-top: 14px;
+  margin-top: 0;
 }
 
 /* Skip button — ghost style */

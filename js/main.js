@@ -113,38 +113,35 @@ if (backBtn) {
   });
 }
 
-const nextBtn = $('next-btn');
-if (nextBtn) {
-  nextBtn.addEventListener('click', () => {
-    const idx = LETTERS.indexOf(g1.currentLetter);
-    let next = null;
-    for (let i = 1; i <= LETTERS.length; i++) {
-      const l = LETTERS[(idx + i) % LETTERS.length];
-      if (!g1.completedLetters.has(l)) {
-        next = l;
-        break;
-      }
-    }
-    if (next) {
-      startLetter(next);
-    } else {
-      showScreen('picker-screen');
-      renderPicker();
-    }
-  });
-}
-
 const clueBtn = $('clue-btn');
 if (clueBtn) clueBtn.addEventListener('click', useClue);
 
 const g1SkipBtn = $('g1-skip-btn');
 if (g1SkipBtn) g1SkipBtn.addEventListener('click', skipCurrent);
 
-// Try Again button is dynamically rendered into the focus card — delegate.
+// Try Again / Next buttons are dynamically rendered into the focus card — delegate.
 const gameScreen = $('game-screen');
 if (gameScreen) {
   gameScreen.addEventListener('click', (e) => {
     if (e.target.closest('#g1-tryagain-btn')) tryAgain();
+    
+    if (e.target.closest('#g1-next-btn') || e.target.closest('#g1-top-next-btn')) {
+      const idx = LETTERS.indexOf(g1.currentLetter);
+      let next = null;
+      for (let i = 1; i <= LETTERS.length; i++) {
+        const l = LETTERS[(idx + i) % LETTERS.length];
+        if (!g1.completedLetters.has(l)) {
+          next = l;
+          break;
+        }
+      }
+      if (next) {
+        startLetter(next);
+      } else {
+        showScreen('picker-screen');
+        renderPicker();
+      }
+    }
   });
 }
 

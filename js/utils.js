@@ -5,7 +5,7 @@ let toastTimeout;
 function showToast(msg, type = 'info') {
   const toast = $('toast');
   if (!toast) return;
-  toast.textContent = msg;
+  toast.innerHTML = msg;
   toast.className = `toast ${type}`;
   void toast.offsetWidth;
   toast.classList.add('show');
