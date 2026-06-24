@@ -153,11 +153,6 @@ export function useClue() {
   g1.currentClueLevel++;
 
   const remaining = Math.max(0, MAX_CLUES - g1.currentClueLevel);
-  if (remaining > 0) {
-    showToast(`<i class="ph-bold ph-lightbulb"></i> Letter revealed! ${remaining} clue${remaining === 1 ? '' : 's'} left.`, 'info');
-  } else {
-    showToast(`<i class="ph-bold ph-eye"></i> All clues used! Click Reveal to show answer.`, 'info');
-  }
   renderFocusCard();
 }
 
@@ -236,11 +231,11 @@ export function renderFocusCard() {
   }
 
   // Build tiles + spaces
-  let html = '';
+  let html = '<span class="g1-word">';
   for (let i = 0; i < focused.length; i++) {
     const ch = focused[i];
     if (ch === ' ' || ch === '-' || ch === "'") {
-      html += `<span class="g1-space"></span>`;
+      html += `</span><span class="g1-space"></span><span class="g1-word">`;
       continue;
     }
     if (g1.revealedPositions.has(i)) {
@@ -249,6 +244,8 @@ export function renderFocusCard() {
       html += `<span class="g1-tile blank"></span>`;
     }
   }
+  html += '</span>';
+  html = html.replace(/<span class="g1-word"><\/span>/g, '');
   d.focusName.innerHTML = html;
   updateClueButton();
 }
@@ -430,7 +427,6 @@ function advanceQueue(afterCorrect) {
     renderCompletion();
     setTimeout(() => {
       renderPicker();
-      showToast(`🌟 All ${countries.length} countries found for ${g1.currentLetter}!`, 'info');
     }, 400);
   } else {
     renderEndOfRound();
@@ -461,7 +457,6 @@ export function skipCurrent() {
   const focused = currentFocused();
   if (!focused) return;
   g1._advancing = true;
-  showToast(`Skipped! It was ${countryFlagEmoji(focused)} ${focused}`, 'info');
   advanceQueue(false);
   g1._advancing = false;
   const d = dom();
@@ -510,7 +505,6 @@ export function submitG1Guess() {
     revealFull(focused);
     if (d.inputWrap) d.inputWrap.classList.add('success');
     setG1Feedback(`✓ ${countryFlagEmoji(focused)} ${focused}`, 'success');
-    showToast(`✓ ${countryFlagEmoji(focused)} ${focused}`, 'success');
     d.countryInput.value = '';
     updateG1SubmitBtn();
 
@@ -541,7 +535,6 @@ export function submitG1Guess() {
   g1.streak = 0;
   persist((s) => { s.totalGuesses++; });
   flashError(d, `"${raw}" is not a country starting with "${g1.currentLetter}"`);
-  showToast('Not a match!', 'error');
   updateProgress();
 }
 
@@ -549,15 +542,17 @@ export function submitG1Guess() {
 function revealFull(focused) {
   const d = dom();
   if (!d.focusName) return;
-  let html = '';
+  let html = '<span class="g1-word">';
   for (let i = 0; i < focused.length; i++) {
     const ch = focused[i];
     if (!isLetterChar(ch)) {
-      html += `<span class="g1-space"></span>`;
+      html += `</span><span class="g1-space"></span><span class="g1-word">`;
       continue;
     }
     html += `<span class="g1-tile revealed">${escapeAttr(ch)}</span>`;
   }
+  html += '</span>';
+  html = html.replace(/<span class="g1-word"><\/span>/g, '');
   d.focusName.innerHTML = html;
 }
 

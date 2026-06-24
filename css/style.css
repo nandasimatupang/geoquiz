@@ -883,6 +883,12 @@ header {
   color: transparent;
 }
 
+.g1-word {
+  display: flex;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
 .g1-space {
   width: 14px;
   flex-shrink: 0;
