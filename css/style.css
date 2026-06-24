@@ -508,7 +508,7 @@ header {
   background: linear-gradient(145deg, #1a1a1e 0%, #18181b 100%);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  padding: 12px 16px 16px;
+  padding: 12px 16px;
   box-shadow: var(--shadow-md);
   width: 100%;
 }
@@ -517,7 +517,7 @@ header {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .g1-hero-top > :first-child {
@@ -532,10 +532,11 @@ header {
 
 
 
-.g1-hero-body {
+.g1-progress-row {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-bottom: 16px;
 }
 
 .g1-letter-badge {
@@ -826,13 +827,16 @@ header {
 }
 
 .g1-focus-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
+}
+.g1-focus-header > :last-child {
+  justify-self: end;
 }
 
 .g1-focus-header .continent-badge {
-  min-width: 110px;
+  justify-self: start;
   font-size: 12px;
   padding: 5px 14px;
 }
@@ -880,19 +884,31 @@ header {
   flex-wrap: nowrap;
 }
 
+.g1-focus-name.word-sm .g1-tile {
+  width: 28px;
+  height: 36px;
+  font-size: 16px;
+}
+.g1-focus-name.word-sm .g1-word {
+  gap: 4px;
+}
+
+.g1-focus-name.word-xs .g1-tile {
+  width: 22px;
+  height: 28px;
+  font-size: 13px;
+  border-radius: 4px;
+}
+.g1-focus-name.word-xs .g1-word {
+  gap: 3px;
+}
+
 .g1-space {
   width: 14px;
   flex-shrink: 0;
 }
 
-.g1-focus-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  position: relative;
-  z-index: 1;
-}
+/* Removed g1-focus-actions */
 
 /* End-of-round / completion message inside the focus card */
 .g1-focus-message {
@@ -954,13 +970,14 @@ header {
 }
 
 /* Hint button sits inline in the focus card with text */
-.g1-focus-actions .g1-clue-btn {
+.g1-focus-header .g1-clue-btn {
   width: auto;
   height: auto;
-  padding: 8px 18px;
-  font-size: 14px;
-  gap: 8px;
-  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 6px;
+  border-radius: 10px;
 }
 
 /* ─── Found Countries List ─── */
@@ -1092,15 +1109,15 @@ header {
 
 @media (max-width: 600px) {
   #game-screen { gap: 12px; padding-top: 8px; }
-  .g1-hero { padding: 12px 14px 16px; }
+  .g1-hero { padding: 12px 14px; }
   .g1-letter-badge { width: 60px; height: 60px; font-size: 32px; border-radius: 16px; }
-  .g1-hero-body { gap: 14px; }
+  .g1-progress-row { gap: 14px; }
   .g1-hero-label { font-size: 13px; }
   .g1-input-card { padding: 10px 12px; }
   #country-input { font-size: 15px; padding: 12px 10px; }
   .g1-submit-btn { width: 42px; height: 42px; font-size: 18px; }
   .g1-focus-card { padding: 16px; gap: 14px; }
-  .g1-focus-header .continent-badge { min-width: 90px; font-size: 10px; }
+  .g1-focus-header .continent-badge { font-size: 10px; }
   .g1-tile { width: 30px; height: 38px; font-size: 17px; }
   .g1-space { width: 10px; }
   .g1-found-list { max-height: 220px; padding: 8px; }

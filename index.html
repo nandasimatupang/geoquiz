@@ -104,31 +104,20 @@
             <div class="g1-letter-badge" id="current-letter">A</div>
             <button id="g1-top-next-btn" class="back-btn" title="Skip this letter">Next <i class="ph-bold ph-arrow-right"></i></button>
           </div>
-          <div class="g1-hero-body">
-            <div class="g1-hero-stats">
-              <div class="g1-hero-label" id="progress-text">0 / 11</div>
-              <div class="g1-progress-track">
-                <div class="g1-progress-fill" id="progress-bar"></div>
-              </div>
-            </div>
-            <span class="g1-streak" id="g1-streak">—</span>
-          </div>
         </div>
 
         <!-- Focus & Input Card (Merged) -->
         <div class="g1-focus-card">
           <div class="g1-focus-header">
             <span class="continent-badge" id="g1-focus-continent">—</span>
+            <button id="clue-btn" class="g1-clue-btn" title="Reveal a letter">
+              <i class="ph-bold ph-lightbulb"></i> Clue
+            </button>
             <button id="g1-skip-btn" class="g1-skip-btn" title="Skip this country">
               Skip <i class="ph-bold ph-skip-forward"></i>
             </button>
           </div>
           <div class="g1-focus-name" id="g1-focus-name"></div>
-          <div class="g1-focus-actions">
-            <button id="clue-btn" class="g1-clue-btn" title="Reveal a letter">
-              <i class="ph-bold ph-lightbulb"></i> Clue
-            </button>
-          </div>
           <div class="g1-input-row">
             <div class="g1-input-wrap">
               <i class="ph-bold ph-search g1-input-icon"></i>
@@ -150,9 +139,14 @@
 
         <!-- Found Countries List -->
         <div class="g1-found-section">
-          <div class="g1-found-header">
-            <h3><span id="found-count">0</span> Found</h3>
-            <span class="found-badge" id="found-badge">0 / 0</span>
+          <div class="g1-progress-row">
+            <div class="g1-hero-stats">
+              <div class="g1-hero-label" id="progress-text">0 / 11</div>
+              <div class="g1-progress-track">
+                <div class="g1-progress-fill" id="progress-bar"></div>
+              </div>
+            </div>
+            <span class="g1-streak" id="g1-streak">—</span>
           </div>
           <div class="g1-found-list" id="g1-found-list"></div>
         </div>

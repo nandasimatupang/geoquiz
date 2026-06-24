@@ -214,6 +214,19 @@ export function startLetter(letter) {
   setG1Feedback('');
 }
 
+// ── Dynamically resize tile board if the word is very long ──
+function updateFocusNameClass(focused) {
+  const d = dom();
+  if (!d.focusName || !focused) return;
+  const words = focused.split(/[\s-']/);
+  const maxWordLen = Math.max(...words.map(w => w.length));
+  
+  let classes = 'g1-focus-name';
+  if (maxWordLen >= 12) classes += ' word-xs';
+  else if (maxWordLen >= 9) classes += ' word-sm';
+  d.focusName.className = classes;
+}
+
 // ── Render the focus card (one country) ──
 export function renderFocusCard() {
   const d = dom();
@@ -232,6 +245,7 @@ export function renderFocusCard() {
   }
 
   // Build tiles + spaces
+  updateFocusNameClass(focused);
   let html = '<span class="g1-word">';
   for (let i = 0; i < focused.length; i++) {
     const ch = focused[i];
@@ -364,8 +378,6 @@ function renderFocusMessage(title, desc, showTryAgain, showNextBtn = false) {
   // Hide chrome for the message state
   const header = document.querySelector('.g1-focus-header');
   if (header) header.style.display = 'none';
-  const actions = document.querySelector('.g1-focus-actions');
-  if (actions) actions.style.display = 'none';
   const inputRow = document.querySelector('.g1-input-row');
   if (inputRow) inputRow.style.display = 'none';
 
@@ -383,8 +395,6 @@ function renderFocusMessage(title, desc, showTryAgain, showNextBtn = false) {
 function restoreFocusChrome() {
   const header = document.querySelector('.g1-focus-header');
   if (header) header.style.display = '';
-  const actions = document.querySelector('.g1-focus-actions');
-  if (actions) actions.style.display = '';
   const inputRow = document.querySelector('.g1-input-row');
   if (inputRow) inputRow.style.display = '';
 }
@@ -545,6 +555,7 @@ export function submitG1Guess() {
 function revealFull(focused) {
   const d = dom();
   if (!d.focusName) return;
+  updateFocusNameClass(focused);
   let html = '<span class="g1-word">';
   for (let i = 0; i < focused.length; i++) {
     const ch = focused[i];
