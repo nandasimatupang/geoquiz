@@ -121,11 +121,21 @@ if (backBtn) {
   });
 }
 
+function handleGameButton(btn, callback) {
+  if (!btn) return;
+  btn.addEventListener('mousedown', (e) => e.preventDefault());
+  btn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    callback(e);
+  });
+  btn.addEventListener('click', callback);
+}
+
 const clueBtn = $('clue-btn');
-if (clueBtn) clueBtn.addEventListener('click', useClue);
+handleGameButton(clueBtn, useClue);
 
 const g1SkipBtn = $('g1-skip-btn');
-if (g1SkipBtn) g1SkipBtn.addEventListener('click', skipCurrent);
+handleGameButton(g1SkipBtn, skipCurrent);
 
 // Try Again / Next buttons are dynamically rendered into the focus card — delegate.
 const gameScreen = $('game-screen');
