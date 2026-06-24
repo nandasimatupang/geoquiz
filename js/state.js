@@ -47,9 +47,7 @@ export function resetBestStreak() {
   }
 }
 
-export function updateHeader() {
-  // Header no longer shows global score/found — kept as no-op for compat
-}
+export function updateHeader() { /* intentional no-op — reserved for future header updates */ }
 
 /**
  * Show a screen by its DOM id and update the URL hash via pushState.

@@ -325,7 +325,8 @@ export async function fetchTopoData() {
     if (mapCanvas) mapCanvas.classList.add('hidden');
 
     try {
-      const res = await fetch('https://unpkg.com/world-atlas@2/countries-50m.json');
+      const res = await fetch('https://unpkg.com/world-atlas@2.0.2/countries-50m.json');
+      if (!res.ok) throw new Error(`Failed to fetch map data: ${res.status}`);
       const world = await res.json();
       const countries = feature(world, world.objects.countries).features;
 

@@ -1,11 +1,6 @@
 const $ = (id) => document.getElementById(id);
 
-let toastTimeout;
-
-function showToast(msg, type = 'info') {
-  // Disabled to remove bottom popup messages
-  return;
-}
+function showToast() {}
 
 function normalize(str) {
   return str

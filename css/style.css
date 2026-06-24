@@ -32,8 +32,9 @@
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.4);
-  --glass-filter: blur(0px); /* Removed heavy glass blur */
+  --glass-filter: blur(12px);
   --neon-glow: 0 0 0 1px #10b981, 0 4px 14px rgba(16, 185, 129, 0.2); /* Crisp premium highlight */
+  --text-bright: #f4f4f5;
 }
 
 * {
@@ -111,7 +112,6 @@ header {
   border: 1px solid var(--border);
   border-radius: 50%;
   box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
   cursor: pointer;
   transition: all var(--transition);
   font-family: inherit;
@@ -434,7 +434,6 @@ header {
   -webkit-backdrop-filter: var(--glass-filter);
   border: 1px solid var(--border);
   color: var(--text-primary);
-  border: 1px solid var(--border);
 }
 
 .btn-secondary:hover:not(:disabled) {
@@ -490,6 +489,20 @@ header {
   color: var(--ocean-accent);
   border-color: var(--ocean-accent);
   background: rgba(16, 185, 129, 0.06);
+}
+
+.scoreboard:focus-visible,
+.btn:focus-visible,
+.flag-option:focus-visible,
+.mc-option:focus-visible,
+.letter-btn:focus-visible,
+.fc-btn:focus-visible,
+.diff-btn:focus-visible,
+.back-btn:focus-visible,
+.game-card:focus-visible,
+.stats-reset-btn:focus-visible {
+  outline: 2px solid var(--ocean-accent);
+  outline-offset: 2px;
 }
 
 /* ═══════════════════════════════════════
@@ -1206,6 +1219,11 @@ header {
   0% { transform: scale(1); }
   50% { transform: scale(1.3); }
   100% { transform: scale(1); }
+}
+
+@keyframes streakPulse {
+  0%, 100% { transform: scale(1); text-shadow: 0 0 0 transparent; }
+  50% { transform: scale(1.08); text-shadow: 0 0 12px rgba(16, 185, 129, 0.6); }
 }
 
 .g3-best {
@@ -2505,7 +2523,7 @@ header {
   font-size: 12px;
   font-weight: 800;
   color: var(--ocean-accent);
-  background: rgba(6, 182, 212, 0.1);
+  background: rgba(16, 185, 129, 0.1);
   padding: 4px 8px;
   border-radius: 12px;
 }
@@ -2610,4 +2628,12 @@ header {
   display: flex;
   justify-content: center;
   gap: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

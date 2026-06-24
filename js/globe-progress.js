@@ -16,6 +16,7 @@ let renderPending = false;
 let lastFoundHash = '';
 let momentum = null;
 let momentumFrame = null;
+let resizeHandler = null;
 
 // ── Helpers ──
 
@@ -185,7 +186,11 @@ export function initGlobe(allMapCountries) {
       );
   }
 
-  window.addEventListener('resize', resize);
+  if (resizeHandler) {
+    window.removeEventListener('resize', resizeHandler);
+  }
+  resizeHandler = resize;
+  window.addEventListener('resize', resizeHandler);
 }
 
 export function showGlobe(foundCountriesSet) {

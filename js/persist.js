@@ -1,7 +1,5 @@
 const STORAGE_KEY = 'geoquiz_progress';
 
-export const MAX_SPRINT_SCORES = 20;
-
 /**
  * Default empty stats structure.
  */

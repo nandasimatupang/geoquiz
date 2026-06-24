@@ -82,8 +82,10 @@ document.querySelectorAll('.game-card').forEach((card) => {
     } else if (game === 'game2') {
       startGame2();
     } else if (game === 'game3') {
+      state.currentGame = 'game3';
       startFlagGame(state.bestStreak);
     } else if (game === 'game4') {
+      state.currentGame = 'game4';
       startCapitalGame(state.bestStreak);
     }
   });
@@ -268,9 +270,11 @@ function onRoute() {
     startGame2();
   }
   if (active.id === 'flaggame-screen') {
+    state.currentGame = 'game3';
     startFlagGame(state.bestStreak);
   }
   if (active.id === 'capitals-screen') {
+    state.currentGame = 'game4';
     startCapitalGame(state.bestStreak);
   }
 }

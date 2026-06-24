@@ -245,8 +245,10 @@ function handleOptionClick(selectedName) {
     }
 
     const saved = loadProgress();
-    const g4Stats = saved?.stats?.game4 || { bestScore: 0, totalSprints: 0, sprintScores: [], totalFoundInSprints: 0 };
-    if (currentStreak > g4Stats.bestScore) g4Stats.bestScore = currentStreak;
+    const g4Stats = saved?.stats?.game4 || { bestScore: 0, totalCapitals: 0, correctCapitals: 0 };
+    g4Stats.totalCapitals++;
+    g4Stats.correctCapitals++;
+    if (bestStreak > g4Stats.bestScore) g4Stats.bestScore = bestStreak;
     saveProgress({
       gameId: 'game4',
       score: state.score,
@@ -284,7 +286,8 @@ function handleOptionClick(selectedName) {
     });
 
     const saved = loadProgress();
-    const g4Stats = saved?.stats?.game4 || { bestScore: 0, totalSprints: 0, sprintScores: [], totalFoundInSprints: 0 };
+    const g4Stats = saved?.stats?.game4 || { bestScore: 0, totalCapitals: 0, correctCapitals: 0 };
+    g4Stats.totalCapitals++;
     saveProgress({
       gameId: 'game4',
       score: state.score,
