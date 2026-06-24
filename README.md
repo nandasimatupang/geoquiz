@@ -2,7 +2,7 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/placeholder/badge.svg)](https://geographquiz.netlify.app)
 
-**Test your geography knowledge with four interactive quiz modes.** Identify countries by letter, recognise their shapes on a map, match flags, and race the clock in a timed sprint.
+**Test your geography knowledge with four interactive quiz modes.** Identify countries by letter, recognise their shapes on a map, match flags, and guess capital cities.
 
 > **[👉 Play GeoQuiz](https://geographquiz.netlify.app)**
 
@@ -23,8 +23,8 @@ See a country's outline rendered on a canvas, then identify it from four multipl
 ### 🚩 Flag Guesser
 A full-screen SVG flag from [flagcdn.com](https://flagcdn.com) with four answer options. Starts with well-known flags (USA, UK, France, Japan, etc.) and gradually introduces harder ones. Filter by continent to focus your practice. Preloads upcoming flags in the background for near-instant display.
 
-### ⏱️ Timed Sprint
-Name as many countries as you can in **60 seconds**. Every correct answer adds to your score. The timer bar changes colour as time runs out (green → orange → red pulse in the final 5 seconds). Results overlay shows your score, best score, and a list of all countries you found.
+### 🏛️ Capitals
+Guess the capital city of a given country. Challenge yourself across different continents and track your progress.
 
 ### 📊 Statistics & Persistence
 All progress is saved automatically to **localStorage** — close the browser and come back to find your streaks, scores, and completed letters exactly where you left off. The stats screen shows:
@@ -32,7 +32,7 @@ All progress is saved automatically to **localStorage** — close the browser an
 - Per-game: best streaks, accuracy percentages, rounds played
 - **Guess by Letter**: completed/remaining letters grid
 - **Flag Guesser**: continent-by-continent progress bars
-- **Timed Sprint**: recent scores as a bar chart, average score
+- **Capitals**: continent-by-continent progress
 - **Overall**: accuracy ring chart with correct/total guess counts
 
 ### 🎨 Design
@@ -173,12 +173,10 @@ Four game cards are displayed in a 2×2 grid. Click any card to start. The heade
 3. Use the continent filter to focus on specific regions.
 4. The game starts with easy, well-known flags and gradually introduces harder ones.
 
-### Timed Sprint
-1. The 60-second countdown starts immediately.
-2. Type any country name and press Enter to submit.
-3. Duplicates within a sprint are rejected.
-4. The timer bar shrinks and changes colour as time runs out.
-5. When time's up, a results overlay shows your score and all countries found.
+### Capitals
+1. A country is presented along with four capital city options.
+2. Choose the correct capital.
+3. Filter by continent to focus on specific regions.
 
 ---
 
@@ -191,8 +189,8 @@ Click the bar-chart icon in the header to open the statistics screen. It shows:
 | **Guess by Letter** | Completed letters, best streak, accuracy, letter grid      |
 | **Guess the Shape** | Best streak, rounds played, accuracy                       |
 | **Flag Guesser**    | Best streak, flags identified, accuracy, continent bars    |
-| **Timed Sprint**    | Best score, sprints played, average score, score history   |
-| **Overall Accuracy** | Ring chart combining all three quiz games (excl. sprint)  |
+| **Capitals**        | Best streak, capitals identified, accuracy, continent bars |
+| **Overall Accuracy** | Ring chart combining all quiz games                       |
 
 Use the **"Reset All Data"** button at the bottom to wipe everything (requires confirmation).
 
@@ -200,7 +198,7 @@ Use the **"Reset All Data"** button at the bottom to wipe everything (requires c
 
 ## 🧠 Architecture Notes
 
-- **Single-page application** — no router library, all routing via URL hashes (`#home`, `#picker`, `#game1`, `#flags`, `#mapgame`, `#sprint`, `#stats`)
+- **Single-page application** — no router library, all routing via URL hashes (`#home`, `#picker`, `#game1`, `#flags`, `#mapgame`, `#capitals`, `#stats`)
 - **ES modules** — each game, utility, and data file is a separate module loaded by Vite's dev server or bundled for production
 - **State management** — a shared `state` object in `state.js` with per-game data objects that each hold their own `score`, `totalFound`, `allFound` (Set), and `bestStreak`
 - **Persistence** — `persist.js` serialises the full game state to `localStorage` with automatic migration from legacy formats
