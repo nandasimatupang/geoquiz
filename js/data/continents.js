@@ -61,7 +61,7 @@ export const CONTINENTS = {
   'Sudan': 'Africa', 'Suriname': 'South America', 'Sweden': 'Europe',
   'Switzerland': 'Europe', 'Syria': 'Asia',
   'Taiwan': 'Asia', 'Tajikistan': 'Asia', 'Tanzania': 'Africa',
-  'Thailand': 'Asia', 'Timor-Leste': 'Asia', 'Togo': 'Africa', 'Tonga': 'Oceania',
+  'Thailand': 'Asia', 'Timor Leste': 'Asia', 'Togo': 'Africa', 'Tonga': 'Oceania',
   'Trinidad and Tobago': 'North America', 'Tunisia': 'Africa', 'Turkey': 'Europe',
   'Turkmenistan': 'Asia', 'Tuvalu': 'Oceania',
   'Uganda': 'Africa', 'Ukraine': 'Europe', 'United Arab Emirates': 'Asia',

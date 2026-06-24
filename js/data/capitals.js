@@ -173,7 +173,7 @@ export const CAPITALS = {
   "Tajikistan": "Dushanbe",
   "Tanzania": "Dodoma",
   "Thailand": "Bangkok",
-  "Timor-Leste": "Dili",
+  "Timor Leste": "Dili",
   "Togo": "Lome",
   "Tonga": "Nuku'alofa",
   "Trinidad and Tobago": "Port of Spain",
