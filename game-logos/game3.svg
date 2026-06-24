@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" fill="none" rx="40" ry="40" />
+  
+  <g transform="translate(15, 15)">
+    <!-- Flag 1: France (Top-Left) -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="28" height="80" fill="#002395" rx="4"/>
+      <rect x="28" y="0" width="28" height="80" fill="#ffffff"/>
+      <rect x="56" y="0" width="28" height="80" fill="#ED2939" rx="4"/>
+    </g>
+    
+    <!-- Flag 2: Japan (Top-Right) -->
+    <g transform="translate(90, 0)">
+      <rect x="0" y="0" width="80" height="80" fill="#ffffff" stroke="#e0e0e0" stroke-width="1" rx="4"/>
+      <circle cx="40" cy="40" r="20" fill="#BC002D"/>
+    </g>
+    
+    <!-- Flag 3: Sweden (Bottom-Left) -->
+    <g transform="translate(0, 90)">
+      <rect x="0" y="0" width="80" height="80" fill="#006AA7" rx="4"/>
+      <rect x="25" y="0" width="12" height="80" fill="#FECC00"/>
+      <rect x="0" y="34" width="80" height="12" fill="#FECC00"/>
+    </g>
+    
+    <!-- Flag 4: Germany (Bottom-Right) -->
+    <g transform="translate(90, 90)">
+      <rect x="0" y="0" width="80" height="27" fill="#000000" rx="4"/>
+      <rect x="0" y="27" width="80" height="27" fill="#FF0000"/>
+      <rect x="0" y="54" width="80" height="26" fill="#FFCC00" rx="4"/>
+    </g>
+  </g>
+</svg>

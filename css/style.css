@@ -229,10 +229,15 @@ header {
   overflow: hidden;
 }
 
-.game-card-icon i {
+.game-card-icon i,
+.game-card-icon img {
   font-size: 56px;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
   color: var(--text-secondary);
   transition: all var(--transition);
+  display: inline-block;
 }
 
 .game-card:hover {
@@ -242,7 +247,8 @@ header {
   background: #1f1f22;
 }
 
-.game-card:hover .game-card-icon i {
+.game-card:hover .game-card-icon i,
+.game-card:hover .game-card-icon img {
   color: var(--ocean-accent);
   transform: scale(1.1);
 }
@@ -279,10 +285,15 @@ header {
   width: 100%;
 }
 
-.picker-content .globe-icon {
+.picker-content .globe-icon i,
+.picker-content .globe-icon img {
   font-size: 48px;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
   margin-bottom: 8px;
   color: var(--ocean-accent);
+  display: inline-block;
 }
 
 .picker-content h2 {
