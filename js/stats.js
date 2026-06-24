@@ -28,7 +28,7 @@ function computeStats() {
     game1: { bestStreak: 0, totalGuesses: 0, correctGuesses: 0 },
     game2: { bestStreak: 0, totalRounds: 0, correctRounds: 0 },
     game3: { bestStreak: 0, totalFlags: 0, correctFlags: 0 },
-    game4: { bestScore: 0, totalSprints: 0, sprintScores: [], totalFoundInSprints: 0 },
+    game4: { bestScore: 0 },
   };
 
   const completedLettersSet = saved?.games?.game1?.completedLetters || new Set();
@@ -37,12 +37,13 @@ function computeStats() {
 
   // Total countries found (global aggregation for display if needed)
   const totalCountries = ALL_COUNTRIES.length;
-  const overallTotalTarget = totalCountries * 3;
+  const overallTotalTarget = totalCountries * 4;
 
-  // Sum of progress across game 1, 2, and 3
+  // Sum of progress across game 1, 2, 3, and 4
   const foundCount = state.gameData.game1.allFound.size +
                      state.gameData.game2.allFound.size +
-                     state.gameData.game3.allFound.size;
+                     state.gameData.game3.allFound.size +
+                     state.gameData.game4.allFound.size;
                      
   const foundPct = overallTotalTarget > 0 ? Math.round((foundCount / overallTotalTarget) * 100) : 0;
 
@@ -69,16 +70,13 @@ function computeStats() {
     };
   });
 
-  // Sprint averages
-  const sprintScores = stats.game4?.sprintScores || [];
-  const avgSprint = sprintScores.length > 0
-    ? Math.round(sprintScores.reduce((a, b) => a + b, 0) / sprintScores.length)
-    : 0;
+
 
   // Per-game completion
   const g1Completion = totalCountries > 0 ? Math.round((state.gameData.game1.allFound.size / totalCountries) * 100) : 0;
   const g2Completion = totalCountries > 0 ? Math.round((state.gameData.game2.allFound.size / totalCountries) * 100) : 0;
   const g3Completion = totalCountries > 0 ? Math.round((state.gameData.game3.allFound.size / totalCountries) * 100) : 0;
+  const g4Completion = totalCountries > 0 ? Math.round((state.gameData.game4.allFound.size / totalCountries) * 100) : 0;
 
   // Overall totals (excluding sprint — sprints don't have wrong-answer tracking)
   const totalCorrect = (stats.game1?.correctGuesses || 0) +
@@ -105,6 +103,7 @@ function computeStats() {
     g1Completion,
     g2Completion,
     g3Completion,
+    g4Completion,
     overallAccuracy,
     totalCorrect,
     totalAttempts,
@@ -278,18 +277,15 @@ export function renderStats() {
   // ── Game 4 Stats ──
   const g4El = $('stats-game4');
   if (g4El) {
-    const sprintScores = data.stats.game4?.sprintScores || [];
-    const recentScores = [...sprintScores].reverse().slice(0, 10);
-    const maxSprint = Math.max(...sprintScores, 1);
     g4El.innerHTML = `
       <div class="stat-card accordion-card" id="acc-card-g4">
         <div class="stat-card-header accordion-header" onclick="document.getElementById('acc-card-g4').classList.toggle('open')">
           <div class="accordion-title">
-            <span class="stat-card-icon"><i class="ph-duotone ph-timer"></i></span>
-            <h3>Timed Sprint</h3>
+            <span class="stat-card-icon"><i class="ph-duotone ph-buildings"></i></span>
+            <h3>Capitals</h3>
           </div>
           <div class="accordion-summary">
-            ${getMiniScoreHTML(data.stats.game4?.bestScore || 0)}
+            ${getMiniRingHTML(data.g4Completion)}
             <i class="ph-bold ph-caret-down accordion-icon"></i>
           </div>
         </div>
@@ -298,31 +294,13 @@ export function renderStats() {
             <div class="stat-grid">
               <div class="stat-item">
                 <span class="stat-value">${data.stats.game4?.bestScore || 0}</span>
-                <span class="stat-label">Best Score <i class="ph-duotone ph-trophy" style="color:var(--ocean-accent)"></i></span>
+                <span class="stat-label">Best Streak <i class="ph-duotone ph-fire" style="color:var(--ocean-accent)"></i></span>
               </div>
               <div class="stat-item">
-                <span class="stat-value">${data.stats.game4?.totalSprints || 0}</span>
-                <span class="stat-label">Sprints Played</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-value">${data.avgSprint}</span>
-                <span class="stat-label">Avg Score</span>
+                <span class="stat-value">${data.g4Completion}%</span>
+                <span class="stat-label">Completion</span>
               </div>
             </div>
-            ${recentScores.length > 1 ? `
-              <div class="stats-sprint-history" style="margin-top: 14px;">
-                <div class="stats-letter-label">Recent Scores</div>
-                <div class="stats-sprint-bars">
-                  ${recentScores.map((s) => {
-                    const h = Math.max(4, (s / maxSprint) * 60);
-                    const isBest = s === data.stats.game4?.bestScore;
-                    return `<div class="stats-sprint-bar-wrap" title="${s}">
-                      <div class="stats-sprint-bar ${isBest ? 'stats-sprint-bar-best' : ''}" style="height:${h}px"></div>
-                    </div>`;
-                  }).join('')}
-                </div>
-              </div>
-            ` : ''}
           </div>
         </div>
       </div>

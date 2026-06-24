@@ -1,286 +1,349 @@
-import { $, normalize } from './utils.js';
-import { COUNTRY_SET, ALL_COUNTRIES } from './data/countries.js';
+import { $, normalize, showToast, shuffle, escapeAttr } from './utils.js';
 import { state, updateHeader, showScreen } from './state.js';
-import { countryFlagEmoji } from './data/flags.js';
-import { saveProgress, loadProgress, MAX_SPRINT_SCORES } from './persist.js';
+import { ALL_COUNTRIES } from './data/countries.js';
+import { CONTINENTS } from './data/continents.js';
+import { countryFlag, countryFlagEmoji, COUNTRY_ISO } from './data/flags.js';
+import { CAPITALS } from './data/capitals.js';
+import { saveProgress, loadProgress } from './persist.js';
 import { g1 } from './game1.js';
 
-const SPRINT_DURATION = 60; // seconds
-const COUNTDOWN_INTERVAL = 50; // ms for smooth timer bar
+const CONTINENT_NAMES = ['Africa', 'Asia', 'Europe', 'North America', 'South America', 'Oceania'];
 
-// ── DOM refs ──
 function dom() {
   return {
-    sprintTimer: $('sprint-timer'),
-    sprintTimerBar: $('sprint-timer-bar'),
-    sprintScore: $('sprint-score'),
-    sprintBest: $('sprint-best'),
-    sprintInput: $('sprint-input'),
-    sprintSubmitBtn: $('sprint-submit-btn'),
-    sprintFeedback: $('sprint-feedback'),
-    sprintList: $('sprint-list'),
-    sprintOverlay: $('sprint-overlay'),
-    sprintResultScore: $('sprint-result-score'),
-    sprintResultBest: $('sprint-result-best'),
-    sprintResultNewBest: $('sprint-result-newbest'),
-    sprintResultList: $('sprint-result-list'),
-    sprintPlayAgain: $('sprint-play-again'),
-    sprintHomeBtn: $('sprint-home-btn'),
+    capitalRound: $('capital-round'),
+    capitalStreak: $('capital-streak'),
+    capitalBest: $('capital-best'),
+    capitalDisplay: $('capital-country-display'),
+    capitalOptions: $('capital-options'),
+    capitalProgress: $('capital-progress'),
+    capitalProgressText: $('capital-progress-text'),
   };
 }
 
-// ── Reset State ──
+let currentStreak = 0;
+let bestStreak = 0;
+let currentCountry = null;
+let roundNum = 0;
+let answering = false;
+let gameStop = false;
+let selectedContinent = null;
+
 export function resetGame4State() {
-  sprintRunning = false;
-  sprintTimeLeft = 60;
-  sprintScore = 0;
-  sprintBest = 0;
-  sprintFound = new Set();
-  if (sprintIntervalId) {
-    clearInterval(sprintIntervalId);
-    sprintIntervalId = null;
-  }
+  currentStreak = 0;
+  bestStreak = 0;
+  currentCountry = null;
+  roundNum = 0;
+  answering = false;
+  gameStop = false;
+  selectedContinent = null;
 }
 
-// ── State ──
-let sprintRunning = false;
-let sprintTimeLeft = SPRINT_DURATION;
-let sprintScore = 0;
-let sprintBest = 0;
-let sprintFound = new Set(); // countries found in current sprint
-let sprintIntervalId = null;
+function isContinentComplete(continent) {
+  const countries = ALL_COUNTRIES.filter((c) => CONTINENTS[c] === continent);
+  return countries.every((c) => state.allFound.has(normalize(c)));
+}
 
-// ── Start Sprint ──
-export function startSprint(bestVal = 0) {
-  state.currentGame = 'game4';
-  sprintBest = bestVal;
-  sprintScore = 0;
-  sprintTimeLeft = SPRINT_DURATION;
-  sprintRunning = true;
-  sprintFound = new Set();
-
-  showScreen('sprint-screen');
-  updateHeader();
-
-  const d = dom();
-  if (d.sprintTimer) d.sprintTimer.textContent = formatTime(SPRINT_DURATION);
-  if (d.sprintTimerBar) d.sprintTimerBar.style.width = '100%';
-  if (d.sprintScore) d.sprintScore.textContent = '0';
-  if (d.sprintBest) d.sprintBest.textContent = `${sprintBest}`;
-  if (d.sprintFeedback) { d.sprintFeedback.textContent = ''; d.sprintFeedback.className = 'sprint-feedback'; }
-  if (d.sprintList) d.sprintList.innerHTML = '';
-  if (d.sprintOverlay) d.sprintOverlay.classList.add('hidden');
-  if (d.sprintInput) {
-    d.sprintInput.value = '';
-    d.sprintInput.disabled = false;
-    d.sprintInput.focus();
+function getActivePool() {
+  if (selectedContinent) {
+    return ALL_COUNTRIES.filter((c) => CONTINENTS[c] === selectedContinent);
   }
-  if (d.sprintSubmitBtn) d.sprintSubmitBtn.disabled = true;
+  return ALL_COUNTRIES;
+}
 
-  // Start countdown timer (updates every 50ms for smooth bar)
-  const startTime = Date.now();
-  sprintIntervalId = setInterval(() => {
-    const elapsed = (Date.now() - startTime) / 1000;
-    sprintTimeLeft = Math.max(0, SPRINT_DURATION - elapsed);
-    updateTimerDisplay();
-
-    if (sprintTimeLeft <= 0) {
-      endSprint();
+function generateOptions(correctName) {
+  const continent = CONTINENTS[correctName] || '';
+  const pool = getActivePool();
+  const sameContinent = [];
+  const otherContinent = [];
+  pool.forEach((c) => {
+    if (c !== correctName) {
+      if (CONTINENTS[c] === continent) sameContinent.push(c);
+      else otherContinent.push(c);
     }
-  }, COUNTDOWN_INTERVAL);
-}
-
-function formatTime(seconds) {
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}
-
-function updateTimerDisplay() {
-  const d = dom();
-  const pct = (sprintTimeLeft / SPRINT_DURATION) * 100;
-  if (d.sprintTimerBar) d.sprintTimerBar.style.width = `${pct}%`;
-  if (d.sprintTimer) d.sprintTimer.textContent = formatTime(sprintTimeLeft);
-
-  // Color change when low
-  if (d.sprintTimerBar) {
-    d.sprintTimerBar.className = 'sprint-timer-bar' +
-      (sprintTimeLeft <= 10 ? ' sprint-timer-danger' : '') +
-      (sprintTimeLeft <= 5 ? ' sprint-timer-critical' : '');
-  }
-}
-
-// ── End Sprint ──
-function endSprint() {
-  if (!sprintRunning) return;
-  sprintRunning = false;
-
-  if (sprintIntervalId) {
-    clearInterval(sprintIntervalId);
-    sprintIntervalId = null;
-  }
-
-  const d = dom();
-  if (d.sprintInput) d.sprintInput.disabled = true;
-  if (d.sprintSubmitBtn) d.sprintSubmitBtn.disabled = true;
-
-  // Check if new best — also save sprint stats
-  const isNewBest = sprintScore > sprintBest;
-  if (isNewBest) {
-    sprintBest = sprintScore;
-  }
-  const saved = loadProgress();
-  const g4Stats = saved?.stats?.game4 || { bestScore: 0, totalSprints: 0, sprintScores: [], totalFoundInSprints: 0 };
-  g4Stats.totalSprints++;
-  g4Stats.totalFoundInSprints += sprintFound.size;
-  g4Stats.sprintScores.push(sprintScore);
-  if (g4Stats.sprintScores.length > MAX_SPRINT_SCORES) g4Stats.sprintScores = g4Stats.sprintScores.slice(-MAX_SPRINT_SCORES);
-  if (sprintScore > g4Stats.bestScore) g4Stats.bestScore = sprintScore;
-  saveProgress({
-    gameId: 'game4',
-    score: state.score,
-    totalFound: state.totalFound,
-    allFound: state.allFound,
-    completedLetters: g1.completedLetters,
-    bestStreak: sprintBest,
-    gameStats: { game4: g4Stats },
   });
+  shuffle(sameContinent);
+  shuffle(otherContinent);
+  const distractors = sameContinent.slice(0, 3).concat(
+    otherContinent.slice(0, Math.max(0, 3 - sameContinent.length))
+  );
+  if (distractors.length < 3) {
+    const fallback = ALL_COUNTRIES.filter((c) => c !== correctName);
+    shuffle(fallback);
+    distractors.push(...fallback.slice(0, 3 - distractors.length));
+  }
+  return shuffle([correctName, ...distractors.slice(0, 3)]);
+}
 
-  // Show results overlay
-  if (d.sprintOverlay) d.sprintOverlay.classList.remove('hidden');
-  if (d.sprintResultScore) d.sprintResultScore.textContent = `${sprintScore}`;
-  if (d.sprintResultBest) d.sprintResultBest.textContent = `${sprintBest}`;
-  if (d.sprintResultNewBest) {
-    d.sprintResultNewBest.classList.toggle('hidden', !isNewBest);
+function pickCountry() {
+  const activePool = getActivePool();
+  const allUnfound = activePool.filter((c) => !state.allFound.has(normalize(c)));
+  const pool = allUnfound.length > 0 ? allUnfound : activePool;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function preloadNextFlags(count = 8) {
+  const seen = new Set();
+  let attempts = 0;
+  while (seen.size < count && attempts < count * 4) {
+    attempts++;
+    const name = pickCountry();
+    const iso = COUNTRY_ISO[name];
+    if (iso && !seen.has(name)) {
+      seen.add(name);
+      const img = new Image();
+      img.src = `https://flagcdn.com/${iso}.svg`;
+    }
+  }
+}
+
+function updateContinentMarkers() {
+  document.querySelectorAll('#capital-continent-filter .fc-btn').forEach((btn) => {
+    const continent = btn.dataset.continent;
+    if (continent && continent !== 'all' && isContinentComplete(continent)) {
+      btn.classList.add('completed');
+    } else {
+      btn.classList.remove('completed');
+    }
+  });
+}
+
+function showCompletion() {
+  const d = dom();
+  answering = false;
+  if (d.capitalOptions) d.capitalOptions.innerHTML = '';
+
+  let icon, title, desc;
+  if (selectedContinent) {
+    icon = '<i class="ph-duotone ph-confetti"></i>';
+    title = 'Continent Complete!';
+    desc = `You found every capital in ${selectedContinent}!`;
+  } else if (CONTINENT_NAMES.every((c) => isContinentComplete(c))) {
+    icon = '<i class="ph-duotone ph-globe"></i>';
+    title = 'World Complete!';
+    desc = 'You found every capital in the world! Amazing!';
+  } else {
+    const next = CONTINENT_NAMES.find((c) => !isContinentComplete(c));
+    icon = '<i class="ph-duotone ph-star"></i>';
+    title = 'Keep Going!';
+    const done = CONTINENT_NAMES.filter((c) => isContinentComplete(c)).length;
+    desc = `${done} / 6 continents complete. Ready for ${next}?`;
   }
 
-  // Show list of found countries
-  if (d.sprintResultList) {
-    const sorted = [...sprintFound].sort();
-    d.sprintResultList.innerHTML = sorted
-      .map((c) => `<span class="sprint-result-item">${countryFlagEmoji(c)} ${c}</span>`)
+  if (d.capitalDisplay) {
+    d.capitalDisplay.innerHTML = `
+      <div class="flag-completion">
+        <span class="flag-completion-icon">${icon}</span>
+        <h3 class="flag-completion-title">${title}</h3>
+        <p class="flag-completion-desc">${desc}</p>
+      </div>`;
+  }
+  updateContinentMarkers();
+}
+
+function renderRound() {
+  if (gameStop) return;
+  const d = dom();
+  if (!d.capitalDisplay) return;
+
+  const activePool = getActivePool();
+  const remaining = activePool.filter((c) => !state.allFound.has(normalize(c)));
+  if (remaining.length === 0) {
+    showCompletion();
+    return;
+  }
+
+  currentCountry = pickCountry();
+  roundNum++;
+  if (d.capitalRound) d.capitalRound.textContent = `Round ${roundNum}`;
+  if (d.capitalStreak) {
+    d.capitalStreak.innerHTML = currentStreak > 0 ? `<i class="ph-bold ph-fire"></i> ${currentStreak}` : '—';
+    d.capitalStreak.className = currentStreak >= 5 ? 'g3-streak hot' : (currentStreak > 0 ? 'g3-streak active' : 'g3-streak');
+  }
+  if (d.capitalBest) d.capitalBest.textContent = `Best: ${bestStreak}`;
+
+  const total = activePool.length;
+  const found = activePool.filter((c) => state.allFound.has(normalize(c))).length;
+  const pct = total > 0 ? Math.round((found / total) * 100) : 0;
+  if (d.capitalProgress) d.capitalProgress.style.width = `${pct}%`;
+  if (d.capitalProgressText) d.capitalProgressText.textContent = `${found} / ${total}`;
+
+  const iso = COUNTRY_ISO[currentCountry];
+  let flagHTML = '';
+  if (iso) {
+    flagHTML = countryFlag(currentCountry);
+  } else {
+    flagHTML = `<span class="flag-emoji-placeholder">${countryFlagEmoji(currentCountry)}</span>`;
+  }
+
+  if (d.capitalDisplay) {
+    d.capitalDisplay.innerHTML = `
+      <div class="capital-flag">${flagHTML}</div>
+      <span class="capital-name">${currentCountry}</span>
+    `;
+  }
+
+  const options = generateOptions(currentCountry);
+  answering = true;
+  if (d.capitalOptions) {
+    d.capitalOptions.innerHTML = options
+      .map((name) => `<button class="flag-option" data-country="${escapeAttr(name)}">
+          <span class="fo-name">${escapeAttr(CAPITALS[name] || 'Unknown')}</span>
+        </button>`)
       .join('');
   }
+
+  preloadNextFlags();
 }
 
-// ── Submit Guess ──
-export function submitSprintGuess() {
-  if (!sprintRunning) return;
+export function setCapitalContinentFilter(continent) {
+  selectedContinent = continent === 'all' ? null : continent;
+  document.querySelectorAll('#capital-continent-filter .fc-btn').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.continent === continent);
+  });
+  if (!gameStop) {
+    updateContinentMarkers();
+    renderRound();
+  }
+}
+
+function updateCapitalProgress() {
   const d = dom();
-  if (!d.sprintInput) return;
+  const activePool = getActivePool();
+  const total = activePool.length;
+  const found = activePool.filter((c) => state.allFound.has(normalize(c))).length;
+  const pct = total > 0 ? Math.round((found / total) * 100) : 0;
+  if (d.capitalProgress) d.capitalProgress.style.width = `${pct}%`;
+  if (d.capitalProgressText) d.capitalProgressText.textContent = `${found} / ${total}`;
+  updateContinentMarkers();
+}
 
-  const raw = d.sprintInput.value.trim();
-  if (!raw) return;
+function handleOptionClick(selectedName) {
+  if (!answering || !currentCountry || gameStop) return;
+  answering = false;
 
-  const norm = normalize(raw);
-  if (!norm || !COUNTRY_SET.has(norm)) {
-    // Not a country name at all
-    d.sprintInput.classList.add('error');
-    setFeedback(`"${raw}" is not a country`, 'error');
-    d.sprintInput.value = '';
-    updateSubmitBtn();
-    setTimeout(() => d.sprintInput.classList.remove('error'), 400);
-    return;
-  }
+  const correctName = currentCountry;
+  const d = dom();
+  if (!d.capitalOptions) return;
+  const allBtns = d.capitalOptions.querySelectorAll('.flag-option');
+  allBtns.forEach((btn) => (btn.disabled = true));
 
-  // Find the properly-cased name
-  const matched = ALL_COUNTRIES.find((c) => normalize(c) === norm);
-  if (!matched) {
-    d.sprintInput.classList.add('error');
-    setFeedback(`"${raw}" is not recognized`, 'error');
-    d.sprintInput.value = '';
-    updateSubmitBtn();
-    setTimeout(() => d.sprintInput.classList.remove('error'), 400);
-    return;
-  }
+  if (selectedName === correctName) {
+    const btn = d.capitalOptions.querySelector(`.flag-option[data-country="${correctName}"]`);
+    if (btn) btn.classList.add('correct');
+    showToast(`✓ Correct!`, 'success');
 
-  if (sprintFound.has(norm)) {
-    // Already found this sprint
-    d.sprintInput.classList.add('error');
-    setFeedback(`${countryFlagEmoji(matched)} ${matched} — already got it!`, 'info');
-    d.sprintInput.value = '';
-    updateSubmitBtn();
-    setTimeout(() => d.sprintInput.classList.remove('error'), 400);
-    return;
-  }
-
-  // Correct!
-  sprintFound.add(norm);
-  sprintScore++;
-  d.sprintInput.classList.add('success');
-  setFeedback(`✓ ${countryFlagEmoji(matched)} ${matched}`, 'success');
-
-  // Update global found set
-  if (!state.allFound.has(norm)) {
-    state.allFound.add(norm);
-    state.score++;
-    state.totalFound++;
-  }
-
-  updateHeader();
-  if (d.sprintScore) d.sprintScore.textContent = `${sprintScore}`;
-
-  // Add to list
-  if (d.sprintList) {
-    const row = document.createElement('div');
-    row.className = 'sprint-list-item';
-    row.textContent = `${countryFlagEmoji(matched)} ${matched}`;
-    d.sprintList.prepend(row);
-    // Limit visible items
-    while (d.sprintList.children.length > 50) {
-      d.sprintList.removeChild(d.sprintList.lastChild);
+    currentStreak++;
+    if (currentStreak > bestStreak) {
+      bestStreak = currentStreak;
     }
-  }
 
-  d.sprintInput.value = '';
-  updateSubmitBtn();
-  setTimeout(() => d.sprintInput.classList.remove('success'), 400);
-  d.sprintInput.focus();
-}
+    if (!state.allFound.has(normalize(correctName))) {
+      state.allFound.add(normalize(correctName));
+      state.score++;
+      state.totalFound++;
+    }
 
-function setFeedback(text, type = '') {
-  const d = dom();
-  if (!d.sprintFeedback) return;
-  d.sprintFeedback.textContent = text;
-  d.sprintFeedback.className = `sprint-feedback ${type}`;
-}
-
-function updateSubmitBtn() {
-  const d = dom();
-  if (!d.sprintSubmitBtn || !d.sprintInput) return;
-  d.sprintSubmitBtn.disabled = d.sprintInput.value.trim().length === 0;
-}
-
-// ── Public API ──
-export function onSprintInput(e) {
-  updateSubmitBtn();
-}
-
-export function onSprintKeydown(e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    submitSprintGuess();
-  }
-}
-
-export function onSprintPlayAgain() {
-  startSprint(sprintBest);
-}
-
-export function stopSprint() {
-  if (sprintRunning && sprintFound.size > 0) {
-    // Persist any progress found mid-sprint before stopping
+    const saved = loadProgress();
+    const g4Stats = saved?.stats?.game4 || { bestScore: 0, totalSprints: 0, sprintScores: [], totalFoundInSprints: 0 };
+    if (currentStreak > g4Stats.bestScore) g4Stats.bestScore = currentStreak;
     saveProgress({
       gameId: 'game4',
       score: state.score,
       totalFound: state.totalFound,
       allFound: state.allFound,
       completedLetters: g1.completedLetters,
+      bestStreak: bestStreak,
+      gameStats: { game4: g4Stats },
     });
+    
+    updateHeader();
+
+    if (d.capitalStreak) {
+      d.capitalStreak.innerHTML = `<i class="ph-bold ph-fire"></i> ${currentStreak}`;
+      d.capitalStreak.className = currentStreak >= 5 ? 'g3-streak hot pop' : (currentStreak > 0 ? 'g3-streak active pop' : 'g3-streak pop');
+      setTimeout(() => {
+        if (d.capitalStreak) d.capitalStreak.classList.remove('pop');
+      }, 400);
+    }
+    if (d.capitalBest) d.capitalBest.textContent = `Best: ${bestStreak}`;
+
+    if (d.capitalDisplay) {
+      d.capitalDisplay.classList.remove('flag-pop');
+      void d.capitalDisplay.offsetWidth;
+      d.capitalDisplay.classList.add('flag-pop');
+    }
+
+    setTimeout(() => {
+      if (!gameStop) renderRound();
+    }, 700);
+  } else {
+    allBtns.forEach((btn) => {
+      if (btn.dataset.country === selectedName) btn.classList.add('wrong');
+      if (btn.dataset.country === correctName) btn.classList.add('correct');
+    });
+
+    const saved = loadProgress();
+    const g4Stats = saved?.stats?.game4 || { bestScore: 0, totalSprints: 0, sprintScores: [], totalFoundInSprints: 0 };
+    saveProgress({
+      gameId: 'game4',
+      score: state.score,
+      totalFound: state.totalFound,
+      allFound: state.allFound,
+      completedLetters: g1.completedLetters,
+      bestStreak: bestStreak,
+      gameStats: { game4: g4Stats },
+    });
+
+    showToast(`✗ The capital is ${CAPITALS[correctName]}`, 'error');
+
+    currentStreak = 0;
+
+    if (d.capitalStreak) {
+      d.capitalStreak.textContent = '—';
+      d.capitalStreak.className = 'g3-streak';
+    }
+
+    setTimeout(() => {
+      if (!gameStop) renderRound();
+    }, 1500);
   }
-  sprintRunning = false;
-  if (sprintIntervalId) {
-    clearInterval(sprintIntervalId);
-    sprintIntervalId = null;
+  
+  if (correctName && !gameStop) {
+    const continent = CONTINENTS[correctName];
+    if (continent && isContinentComplete(continent)) {
+      showToast(`🎉 ${continent} capitals complete!`, 'success');
+      updateContinentMarkers();
+    }
   }
+
+  updateCapitalProgress();
+}
+
+export function startCapitalGame(bestVal = 0) {
+  state.currentGame = 'game4';
+  gameStop = false;
+  currentStreak = 0;
+  roundNum = 0;
+  answering = false;
+  currentCountry = null;
+  bestStreak = bestVal;
+  selectedContinent = null;
+
+  document.querySelectorAll('#capital-continent-filter .fc-btn').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.continent === 'all');
+  });
+
+  showScreen('capitals-screen');
+  updateHeader();
+  renderRound();
+}
+
+export function onCapitalOptionClick(e) {
+  const btn = e.target.closest('.flag-option');
+  if (btn && !btn.disabled) handleOptionClick(btn.dataset.country);
+}
+
+export function stopCapitalGame() {
+  gameStop = true;
 }

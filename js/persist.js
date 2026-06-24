@@ -10,7 +10,7 @@ function emptyStats() {
     game1: { bestStreak: 0, totalGuesses: 0, correctGuesses: 0 },
     game2: { bestStreak: 0, totalRounds: 0, correctRounds: 0 },
     game3: { bestStreak: 0, totalFlags: 0, correctFlags: 0 },
-    game4: { bestScore: 0, totalSprints: 0, sprintScores: [], totalFoundInSprints: 0 },
+    game4: { bestScore: 0 },
   };
 }
 

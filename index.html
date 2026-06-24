@@ -73,11 +73,11 @@
             </div>
             <div class="game-card" data-game="game4">
               <span class="game-card-icon">
-                <i class="ph-duotone ph-timer"></i>
+                <i class="ph-duotone ph-buildings"></i>
               </span>
               <div class="game-card-text">
-                <h3>Timed Sprint</h3>
-                <p>Name as many countries as you can in 60 seconds</p>
+                <h3>Capitals</h3>
+                <p>Guess the capital city of a country</p>
               </div>
             </div>
           </div>
@@ -193,78 +193,39 @@
         </div>
       </div>
 
-      <!-- Game 4: Timed Sprint Screen -->
-      <div id="sprint-screen" class="screen">
-        <div class="sprint-header">
-          <div class="sprint-timer-wrap">
-            <span class="sprint-timer" id="sprint-timer">1:00</span>
-            <div class="sprint-timer-track">
-              <div class="sprint-timer-bar" id="sprint-timer-bar"></div>
-            </div>
-          </div>
-          <div class="sprint-stats">
-            <div class="sprint-stat">
-              <span class="sprint-stat-label">Score</span>
-              <span class="sprint-stat-value" id="sprint-score">0</span>
-            </div>
-            <div class="sprint-stat">
-              <span class="sprint-stat-label">Best</span>
-              <span class="sprint-stat-value" id="sprint-best">0</span>
-            </div>
+      <!-- Game 4: Capitals Game Screen -->
+      <div id="capitals-screen" class="screen">
+        <div class="g3-hero">
+          <span class="g3-round" id="capital-round">Round 1</span>
+          <span class="g3-streak" id="capital-streak">—</span>
+          <span class="g3-best" id="capital-best">Best: 0</span>
+        </div>
+
+        <div class="g3-filter-section">
+          <div class="g3-continent-filter" id="capital-continent-filter">
+            <button class="fc-btn active" data-continent="all"><i class="ph-bold ph-globe"></i> All</button>
+            <button class="fc-btn" data-continent="Africa"><i class="ph-bold ph-globe-hemisphere-east"></i> Africa</button>
+            <button class="fc-btn" data-continent="Asia"><i class="ph-bold ph-globe-hemisphere-east"></i> Asia</button>
+            <button class="fc-btn" data-continent="Europe"><i class="ph-bold ph-globe-hemisphere-east"></i> Europe</button>
+            <button class="fc-btn" data-continent="North America"><i class="ph-bold ph-globe-hemisphere-west"></i> N. America</button>
+            <button class="fc-btn" data-continent="South America"><i class="ph-bold ph-globe-hemisphere-west"></i> S. America</button>
+            <button class="fc-btn" data-continent="Oceania"><i class="ph-bold ph-globe-hemisphere-east"></i> Oceania</button>
           </div>
         </div>
 
-        <div class="sprint-input-area">
-          <div class="sprint-input-wrapper">
-            <input
-              type="text"
-              id="sprint-input"
-              placeholder="Type any country name..."
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              spellcheck="false"
-            />
-            <button id="sprint-submit-btn" class="btn btn-primary" disabled>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </button>
+        <div class="g3-flag-card">
+          <div class="capital-country-display" id="capital-country-display">
+            <!-- populated by JS -->
           </div>
-          <div class="sprint-feedback" id="sprint-feedback"></div>
         </div>
 
-        <div class="sprint-list-container">
-          <div class="sprint-list-header">
-            <h3>Found countries</h3>
-          </div>
-          <div class="sprint-list" id="sprint-list"></div>
-        </div>
-
-        <!-- Results Overlay -->
-        <div class="sprint-overlay hidden" id="sprint-overlay">
-          <div class="sprint-overlay-content">
-            <div class="sprint-overlay-icon"><i class="ph-duotone ph-timer"></i></div>
-            <h2 class="sprint-overlay-title">Time's Up!</h2>
-            <div class="sprint-overlay-newbest hidden" id="sprint-result-newbest"><i class="ph-bold ph-trophy"></i> New Best!</div>
-            <div class="sprint-overlay-scores">
-              <div class="sprint-overlay-stat">
-                <span class="sprint-overlay-label">Score</span>
-                <span class="sprint-overlay-value" id="sprint-result-score">0</span>
-              </div>
-              <div class="sprint-overlay-stat">
-                <span class="sprint-overlay-label">Best</span>
-                <span class="sprint-overlay-value" id="sprint-result-best">0</span>
-              </div>
+        <div class="g3-options-section">
+          <div class="flag-options" id="capital-options"></div>
+          <div class="g3-actions">
+            <div class="g3-progress-track">
+              <div class="g3-progress-fill" id="capital-progress"></div>
             </div>
-            <div class="sprint-overlay-countries">
-              <h4>Countries found</h4>
-              <div class="sprint-overlay-list" id="sprint-result-list"></div>
-            </div>
-            <div class="sprint-overlay-actions">
-              <button id="sprint-play-again" class="btn btn-primary btn-large"><i class="ph-bold ph-arrows-clockwise"></i> Play Again</button>
-              <button id="sprint-home-btn" class="back-btn"><i class="ph-bold ph-arrow-left"></i> Menu</button>
-            </div>
+            <span class="g3-progress-text" id="capital-progress-text">0 / 197</span>
           </div>
         </div>
       </div>

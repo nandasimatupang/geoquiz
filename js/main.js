@@ -5,7 +5,7 @@ import { renderPicker, startLetter, submitG1Guess, useClue, g1, skipCurrent, try
 import { showStats } from './stats.js';
 import { startGame2, skipRound, handleMcClick, setDifficulty, stopGame } from './game2.js';
 import { startFlagGame, onFlagOptionClick, stopFlagGame, setContinentFilter } from './game3.js';
-import { startSprint, onSprintInput, onSprintKeydown, submitSprintGuess, onSprintPlayAgain, stopSprint } from './game4.js';
+import { startCapitalGame, onCapitalOptionClick, stopCapitalGame, setCapitalContinentFilter } from './game4.js';
 import { fetchTopoData } from './map-renderer.js';
 import { loadProgress } from './persist.js';
 import { preloadFlagImages } from './data/flags.js';
@@ -35,7 +35,7 @@ function stopCurrentGame() {
   } else if (state.currentGame === 'game3') {
     stopFlagGame();
   } else if (state.currentGame === 'game4') {
-    stopSprint();
+    stopCapitalGame();
   }
 }
 
@@ -84,7 +84,7 @@ document.querySelectorAll('.game-card').forEach((card) => {
     } else if (game === 'game3') {
       startFlagGame(state.bestStreak);
     } else if (game === 'game4') {
-      startSprint(state.bestStreak);
+      startCapitalGame(state.bestStreak);
     }
   });
 });
@@ -228,25 +228,16 @@ if (mapDifficulty) {
 
 // ── Game 4 Event Listeners ──
 
-const sprintInput = $('sprint-input');
-const sprintSubmitBtn = $('sprint-submit-btn');
+const capitalOptions = $('capital-options');
+if (capitalOptions) capitalOptions.addEventListener('click', onCapitalOptionClick);
 
-if (sprintInput) {
-  sprintInput.addEventListener('input', onSprintInput);
-  sprintInput.addEventListener('keydown', onSprintKeydown);
-}
-
-if (sprintSubmitBtn) sprintSubmitBtn.addEventListener('click', submitSprintGuess);
-
-const sprintPlayAgain = $('sprint-play-again');
-if (sprintPlayAgain) sprintPlayAgain.addEventListener('click', onSprintPlayAgain);
-
-const sprintHomeBtn = $('sprint-home-btn');
-if (sprintHomeBtn) {
-  sprintHomeBtn.addEventListener('click', () => {
-    stopSprint();
-    showScreen('home-screen');
-    state.currentGame = null;
+const capitalFilter = $('capital-continent-filter');
+if (capitalFilter) {
+  capitalFilter.addEventListener('click', (e) => {
+    const btn = e.target.closest('.fc-btn');
+    if (btn && !btn.classList.contains('active')) {
+      setCapitalContinentFilter(btn.dataset.continent);
+    }
   });
 }
 
@@ -279,8 +270,8 @@ function onRoute() {
   if (active.id === 'flaggame-screen') {
     startFlagGame(state.bestStreak);
   }
-  if (active.id === 'sprint-screen') {
-    startSprint(state.bestStreak);
+  if (active.id === 'capitals-screen') {
+    startCapitalGame(state.bestStreak);
   }
 }
 
