@@ -255,7 +255,7 @@ function renderFlagRound() {
   if (d.flagRound) d.flagRound.textContent = `Round ${flagRoundNum}`;
   if (d.flagStreak) {
     d.flagStreak.innerHTML = currentStreak > 0 ? `<i class="ph-bold ph-fire"></i> ${currentStreak}` : '—';
-    d.flagStreak.className = currentStreak >= 5 ? 'flag-streak hot' : 'flag-streak';
+    d.flagStreak.className = currentStreak >= 5 ? 'g3-streak hot' : (currentStreak > 0 ? 'g3-streak active' : 'g3-streak');
   }
   if (d.flagBest) d.flagBest.textContent = `Best: ${bestStreak}`;
 
@@ -343,7 +343,10 @@ function handleFlagClick(selectedName) {
     // Update streak display immediately
     if (d.flagStreak) {
       d.flagStreak.innerHTML = `<i class="ph-bold ph-fire"></i> ${currentStreak}`;
-      d.flagStreak.className = currentStreak >= 5 ? 'flag-streak hot' : 'flag-streak';
+      d.flagStreak.className = currentStreak >= 5 ? 'g3-streak hot pop' : (currentStreak > 0 ? 'g3-streak active pop' : 'g3-streak pop');
+      setTimeout(() => {
+        if (d.flagStreak) d.flagStreak.classList.remove('pop');
+      }, 400);
     }
     if (d.flagBest) d.flagBest.textContent = `Best: ${bestStreak}`;
 
@@ -385,7 +388,7 @@ function handleFlagClick(selectedName) {
 
     if (d.flagStreak) {
       d.flagStreak.textContent = '—';
-      d.flagStreak.className = 'flag-streak';
+      d.flagStreak.className = 'g3-streak';
     }
 
     setTimeout(() => {

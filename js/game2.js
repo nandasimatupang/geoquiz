@@ -101,6 +101,10 @@ function handleOptionClick(selectedName) {
     g2Streak++;
     if (g2Streak > g2BestStreak) g2BestStreak = g2Streak;
     updateMapStreak();
+    if (d.streakEl) {
+      d.streakEl.classList.add('pop');
+      setTimeout(() => { if (d.streakEl) d.streakEl.classList.remove('pop'); }, 400);
+    }
 
     if (!state.allFound.has(normalize(correctName))) {
       state.allFound.add(normalize(correctName));
@@ -231,7 +235,7 @@ function updateMapStreak() {
   if (!d.streakEl) return;
   if (g2Streak > 0) {
     d.streakEl.innerHTML = `<i class="ph-bold ph-fire"></i> ${g2Streak}`;
-    d.streakEl.className = g2Streak >= 5 ? 'g2-streak hot' : 'g2-streak';
+    d.streakEl.className = g2Streak >= 5 ? 'g2-streak hot' : 'g2-streak active';
   } else {
     d.streakEl.textContent = '—';
     d.streakEl.className = 'g2-streak';

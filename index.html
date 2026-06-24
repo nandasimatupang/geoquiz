@@ -156,13 +156,16 @@
 
       <!-- Game 3: Flag Game Screen -->
       <div id="flaggame-screen" class="screen">
-        <div class="flaggame-header">
-          <div class="flaggame-stats">
-            <span class="flag-round" id="flag-round">Round 1</span>
-            <span class="flag-streak" id="flag-streak">—</span>
-            <span class="flag-best" id="flag-best">Best: 0</span>
-          </div>
-          <div class="flag-continent-filter" id="flag-continent-filter">
+        <!-- Clean Header -->
+        <div class="g3-hero">
+          <span class="g3-round" id="flag-round">Round 1</span>
+          <span class="g3-streak" id="flag-streak">—</span>
+          <span class="g3-best" id="flag-best">Best: 0</span>
+        </div>
+
+        <!-- Filter -->
+        <div class="g3-filter-section">
+          <div class="g3-continent-filter" id="flag-continent-filter">
             <button class="fc-btn active" data-continent="all"><i class="ph-bold ph-globe"></i> All</button>
             <button class="fc-btn" data-continent="Africa"><i class="ph-bold ph-globe-hemisphere-east"></i> Africa</button>
             <button class="fc-btn" data-continent="Asia"><i class="ph-bold ph-globe-hemisphere-east"></i> Asia</button>
@@ -171,19 +174,22 @@
             <button class="fc-btn" data-continent="South America"><i class="ph-bold ph-globe-hemisphere-west"></i> S. America</button>
             <button class="fc-btn" data-continent="Oceania"><i class="ph-bold ph-globe-hemisphere-east"></i> Oceania</button>
           </div>
-          <div class="flag-progress-container">
-            <div class="flag-progress-bar" id="flag-progress"></div>
-          </div>
-          <span class="flag-progress-text" id="flag-progress-text">0 / 197</span>
         </div>
 
-        <div class="flag-display-area">
+        <!-- Flag Card -->
+        <div class="g3-flag-card">
           <div class="flag-display" id="flag-display">🇺🇸</div>
-          <div class="flag-options" id="flag-options"></div>
         </div>
 
-        <div class="flag-footer">
-          <span class="flag-tip">Click the country name that matches this flag</span>
+        <!-- Options & Actions -->
+        <div class="g3-options-section">
+          <div class="flag-options" id="flag-options"></div>
+          <div class="g3-actions">
+            <div class="g3-progress-track">
+              <div class="g3-progress-fill" id="flag-progress"></div>
+            </div>
+            <span class="g3-progress-text" id="flag-progress-text">0 / 197</span>
+          </div>
         </div>
       </div>
 

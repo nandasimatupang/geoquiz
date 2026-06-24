@@ -506,6 +506,11 @@ export function submitG1Guess() {
     g1.foundOrder.push(focused);
     g1.streak++;
     if (g1.streak > g1.bestStreak) g1.bestStreak = g1.streak;
+    const d = dom();
+    if (d.streakEl) {
+      d.streakEl.classList.add('pop');
+      setTimeout(() => { if (d.streakEl) d.streakEl.classList.remove('pop'); }, 400);
+    }
 
     if (!state.allFound.has(focusedNorm)) {
       state.allFound.add(focusedNorm);
