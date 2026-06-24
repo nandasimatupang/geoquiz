@@ -8,7 +8,7 @@ const HASH_MAP = {
   'game-screen': 'game1',
   'mapgame-screen': 'mapgame',
   'flaggame-screen': 'flags',
-  'sprint-screen': 'sprint',
+  'capitals-screen': 'capitals',
   'stats-screen': 'stats',
 };
 
@@ -107,7 +107,7 @@ export function handleRoute() {
     state.currentGame = null;
     return;
   }
-  if (screenId === 'sprint-screen') {
+  if (screenId === 'capitals-screen') {
     state.currentGame = null;
     return;
   }
